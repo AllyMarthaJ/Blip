@@ -1,0 +1,224 @@
+namespace Blip.Tests;
+
+[TestFixture]
+public class StringMapTests {
+    [SetUp]
+    public void Setup() { }
+
+    [TestFixture]
+    public class ToStringTests {
+        [Test]
+        public void SingleLine() {
+            // Don't assert on the contents here; we're not creating anything.
+            var width = 10;
+
+            Assert.That(new StringMap(width, 1).ToString(), Has.Length.EqualTo(width));
+        }
+
+        [Test]
+        public void NoLines() {
+            var width = 10;
+
+            Assert.That(new StringMap(width, 0).ToString(), Has.Length.EqualTo(0));
+        }
+
+        [Test]
+        public void MultipleDegenerateLines() {
+            var height = 10;
+
+            Assert.That(new StringMap(0, height).ToString(), Has.Length.EqualTo(0));
+        }
+
+        [Test]
+        public void MultipleSingletonLines() {
+            var height = 10;
+
+            Assert.That(new StringMap(1, height).ToString(), Has.Length.EqualTo(2 * height - 1));
+        }
+
+        [Test]
+        public void NoLinesOrWidth() {
+            Assert.That(new StringMap(0, 0).ToString(), Has.Length.EqualTo(0));
+        }
+
+        [TestFixture]
+        public class FromLineDelimitedStringTests {
+            [Test]
+            public void SingleLineWithData() {
+                var expected = "abcdef";
+
+                Assert.That(StringMap.FromLineDelimitedString(expected).ToString(), Is.EqualTo(expected));
+            }
+
+            [Test]
+            public void MultipleLinesWithData() {
+                var expected = "abcdef\nghijkl\nmnopqr";
+
+                Assert.That(StringMap.FromLineDelimitedString(expected).ToString(), Is.EqualTo(expected));
+            }
+
+            [Test]
+            public void MultipleLinesMismatchedLengths() {
+                var attempt = "abcd\nef";
+
+                Assert.Throws<ArgumentException>(() => StringMap.FromLineDelimitedString(attempt));
+            }
+
+            [Test]
+            public void MultipleEmptyLines() {
+                var expected = "\n\n\n";
+
+                Assert.That(StringMap.FromLineDelimitedString(expected).ToString(), Is.EqualTo(String.Empty));
+            }
+
+            [Test]
+            public void DegenerateStringMap() {
+                Assert.That(new StringMap(0, 0).ToString(), Has.Length.EqualTo(0));
+            }
+        }
+    }
+
+    [TestFixture]
+    [TestFixtureSource(nameof(SetAndGetCharTestsSource))]
+    public class SetAndGetCharTests(int width, int height) {
+        private int width = width;
+        private int height = height;
+
+        private StringMap map;
+
+        private static object[] SetAndGetCharTestsSource = {
+            new object[] { 15, 10 },
+            new object[] { 10, 10 },
+            new object[] { 10, 15 }
+        };
+        
+        [SetUp]
+        public void Setup() {
+            this.map = new StringMap(this.width, this.height);
+        }
+
+        [Test]
+        public void CanSetAndGetValidCharacterInEveryValidPosition() {
+            var expected = 'a';
+
+            for (int i = 0; i < this.width * this.height; i++) {
+                int x = i % this.width;
+                int y = i / this.width;
+
+                this.map.SetChar(expected, x, y);
+                Assert.That(this.map.GetChar(x, y), Is.EqualTo(expected));
+            }
+
+            Assert.That(this.map.ToString(), Has.Exactly(this.width * this.height).EqualTo(expected));
+        }
+
+        [Test]
+        public void XCoordinatePrecedesStart_Throws() {
+            var x = -1;
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.map.GetChar(x, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.map.SetChar('a', x, 0));
+        }
+
+        [Test]
+        public void XCoordinateExceedsEnd_Throws() {
+            var x = this.width;
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.map.GetChar(x, 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.map.SetChar('a', x, 0));
+        }
+
+        [Test]
+        public void YCoordinateExceedsTop_Throws() {
+            var y = -1;
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.map.GetChar(0, y));
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.map.SetChar('a', 0, y));
+        }
+
+        [Test]
+        public void YCoordinateExceedsBottom_Throws() {
+            var y = this.height;
+
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.map.GetChar(0, y));
+            Assert.Throws<ArgumentOutOfRangeException>(() => this.map.SetChar('a', 0, y));
+        }
+    }
+
+    [TestFixture]
+    [TestFixtureSource(nameof(FillRectangleTestsSource))]
+    public class FillRectangleTests(int width, int height) {
+        private int width = width;
+        private int height = height;
+
+        private static object[] FillRectangleTestsSource = {
+            new object[] { 15, 10 },
+            new object[] { 10, 10 },
+            new object[] { 10, 15 }
+        };
+
+        private StringMap map;
+
+        [SetUp]
+        public void Setup() {
+            this.map = new StringMap(this.width, this.height);
+        }
+
+        [Test]
+        public void FillEntireStringMap() {
+            var expected = 'x';
+            Assert.That(this.map.FillRectangle(expected, 0, 0, this.width, this.height).ToString(),
+                Has.Exactly(this.width * this.height).EqualTo(expected));
+        }
+
+        [Test]
+        public void ZeroWidthFillsNoCharacters() {
+            var expected = 'x';
+            Assert.That(this.map.FillRectangle(expected, 0, 0, 0, this.height).ToString(),
+                Has.Exactly(0).EqualTo(expected));
+        }
+
+        [Test]
+        public void ZeroHeightFillsNoCharacters() {
+            var expected = 'x';
+            Assert.That(this.map.FillRectangle(expected, 0, 0, this.width, 0).ToString(),
+                Has.Exactly(0).EqualTo(expected));
+        }
+
+        [Test]
+        public void OneWidthFillsFirstColumn() {
+            var expected = 'x';
+            Assert.That(this.map.FillRectangle(expected, 0, 0, 1, this.height).ToString(),
+                Has.Exactly(this.height).EqualTo(expected));
+            for (int y = 0; y < this.height; y++) {
+                Assert.That(this.map.GetChar(0, y), Is.EqualTo(expected));
+            }
+        }
+
+        [Test]
+        public void OneHeightFillsFirstRow() {
+            var expected = 'x';
+            Assert.That(this.map.FillRectangle(expected, 0, 0, this.width, 1).ToString(),
+                Has.Exactly(this.width).EqualTo(expected));
+            for (int x = 0; x < this.width; x++) {
+                Assert.That(this.map.GetChar(x, 0), Is.EqualTo(expected));
+            }
+        }
+
+        [Test]
+        public void CanCreateCentredRectangle() {
+            var border = 3;
+            int startX = border, startY = border, endX = this.width - 2 * border, endY = this.height - 2 * border;
+            var expected = 'x';
+            
+            Assert.That(this.map.FillRectangle(expected, startX, startY, endX, endY).ToString(), Has.Exactly(
+                (this.width - 2 * border) * (this.height - 2 * border)).EqualTo(expected));
+
+            for (int y = startY; y < endY; y++) {
+                for (int x = startX; x < endX; x++) {
+                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(expected));
+                }
+            }
+        }
+    }
+}
