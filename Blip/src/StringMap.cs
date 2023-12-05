@@ -66,6 +66,10 @@ public class StringMap(int width, int height) {
         return this;
     }
 
+    public StringMap DrawStringMap(StringMap sm, int x, int y) {
+        return this.DrawStringMap(sm, x, y, sm.Width, sm.Height);
+    }
+    
     public StringMap DrawStringMap(StringMap sm, int x, int y, int width, int height,
         DrawStringMapMode mode = DrawStringMapMode.CROP) {
         
@@ -80,6 +84,15 @@ public class StringMap(int width, int height) {
         
         switch (mode) {
             case DrawStringMapMode.CROP:
+                for (int i = 0; i < rectW * rectH; i++) {
+                    int originX = i % rectW;
+                    int originY = i / rectW;
+                    
+                    int targetX = i % rectW + startX;
+                    int targetY = i / rectW + startY;
+        
+                    this.setChar(sm.getChar(originX, originY), targetX, targetY);
+                }
                 break;
             default:
                 throw new ArgumentException(null, nameof(mode));
