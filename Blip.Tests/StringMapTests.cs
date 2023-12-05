@@ -438,8 +438,6 @@ public class StringMapTests {
             
             this.map.DrawRectangle(this.filler, startX, startY, width, height);
 
-            Console.WriteLine("-----------\n" + this.map + "\n----------");
-            
             Assert.That(this.map.ToString(), Has.Exactly(
                 2 * width + 2 * height - 4).EqualTo(this.filler));
         }
