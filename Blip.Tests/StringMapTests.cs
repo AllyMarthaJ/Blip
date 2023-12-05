@@ -441,5 +441,16 @@ public class StringMapTests {
             Assert.That(this.map.ToString(), Has.Exactly(
                 2 * width + 2 * height - 4).EqualTo(this.filler));
         }
+
+        [Test]
+        public void Something() {
+            var map = new StringMap(5, 5);
+            map.DrawRectangle('#', 0, 0, 5, 5);
+
+            var textMap = StringMap.FromLineDelimitedString("hi \nbun\nily");
+            map.DrawStringMap(textMap, 1, 1);
+            
+            Console.WriteLine(map);
+        }
     }
 }
