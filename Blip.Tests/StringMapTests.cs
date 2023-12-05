@@ -220,6 +220,13 @@ public class StringMapTests {
                 }
             }
         }
+
+        [Test]
+        public void FillExceedingBoundaries() {
+            var expected = 'x';
+            Assert.That(this.map.FillRectangle(expected, -1, -1, this.width + 1, this.height + 1).ToString(),
+                Has.Exactly(this.width * this.height).EqualTo(expected));
+        }
     }
 
     [TestFixture]
@@ -314,6 +321,127 @@ public class StringMapTests {
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetWidth).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(rows * this.targetWidth).EqualTo(StringMap.EMPTY_CHAR));
+        }
+    }
+
+    [TestFixture]
+    [TestFixtureSource(nameof(DrawRectangleTestsSource))]
+    public class DrawRectangleTests(int width, int height) {
+        private int width = width;
+        private int height = height;
+        private char filler = 'x';
+
+        private static object[] DrawRectangleTestsSource = {
+            new object[] { 15, 10 },
+            new object[] { 10, 10 },
+            new object[] { 10, 15 }
+        };
+
+        private StringMap map;
+
+        [SetUp]
+        public void Setup() {
+            this.map = new StringMap(this.width, this.height);
+        }
+
+        private object[] DrawEntireRectangleWithExceedingBoundarySource = {
+            new object[] { 0, 0, width, height, 2 * width + 2 * height - 4 },
+            new object[] { -1, -1, width + 2, height + 2, },
+            new object[] { -1, 0, width + 1, height },
+            new object[] { 0, -1, width, height + 1 },
+            new object[] { 0, 0, width + 1, height },
+            new object[] { 0, 0, width, height + 1 },
+        };
+
+        [Test]
+        public void DrawRectangleOnEntireStringMap() {
+            this.map.DrawRectangle(this.filler, 0, 0, this.width, this.height);
+
+            Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + 2 * this.height - 4).EqualTo(this.filler));
+
+            for (int y = 1; y < this.height - 1; y++) {
+                for (int x = 1; x < this.width - 1; x++) {
+                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+                }
+            }
+        }
+
+        [Test]
+        public void DrawRectangleExceedingAllBoundaries() {
+            this.map.DrawRectangle(this.filler, -1, -1, this.width + 2, this.height + 2);
+
+            Assert.That(this.map.ToString(), Has.Exactly(0).EqualTo(this.filler));
+
+            for (int y = 0; y < this.height; y++) {
+                for (int x = 0; x < this.width; x++) {
+                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+                }
+            }
+        }
+
+        [Test]
+        public void DrawRectangleExceedingLeftBoundary() {
+            this.map.DrawRectangle(this.filler, -1, 0, this.width + 1, this.height);
+
+            Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + this.height - 2).EqualTo(this.filler));
+
+            for (int y = 1; y < this.height - 1; y++) {
+                for (int x = 0; x < this.width - 1; x++) {
+                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+                }
+            }
+        }
+
+        [Test]
+        public void DrawRectangleExceedingTopBoundary() {
+            this.map.DrawRectangle(this.filler, 0, -1, this.width, this.height + 1);
+
+            Assert.That(this.map.ToString(), Has.Exactly(2 * this.height + this.width - 2).EqualTo(this.filler));
+
+            for (int y = 0; y < this.height - 1; y++) {
+                for (int x = 1; x < this.width - 1; x++) {
+                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+                }
+            }
+        }
+
+        [Test]
+        public void DrawRectangleExceedingRightBoundary() {
+            this.map.DrawRectangle(this.filler, 0, 0, this.width + 1, this.height);
+
+            Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + this.height - 2).EqualTo(this.filler));
+
+            for (int y = 1; y < this.height - 1; y++) {
+                for (int x = 1; x < this.width; x++) {
+                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+                }
+            }
+        }
+
+        [Test]
+        public void DrawRectangleExceedingBottomBoundary() {
+            this.map.DrawRectangle(this.filler, 0, 0, this.width, this.height + 1);
+
+            Assert.That(this.map.ToString(), Has.Exactly(2 * this.height + this.width - 2).EqualTo(this.filler));
+
+            for (int y = 1; y < this.height; y++) {
+                for (int x = 1; x < this.width - 1; x++) {
+                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+                }
+            }
+        }
+
+        [Test]
+        public void DrawCentredRectangle() {
+            var border = 3;
+            int startX = border, startY = border, width = this.width - 2 * border, height = this.height - 2 * border;
+            
+            this.map.DrawRectangle(this.filler, startX, startY, width, height);
+
+            Console.WriteLine("-----------\n" + this.map + "\n----------");
+            
+            Assert.That(this.map.ToString(), Has.Exactly(
+                2 * width + 2 * height - 4).EqualTo(this.filler));
         }
     }
 }

@@ -39,6 +39,27 @@ public class StringMap(int width, int height) {
         return this;
     }
 
+    public StringMap DrawRectangle(char c, int x, int y, int width, int height) {
+        if (x >= 0) {
+            this.FillRectangle(c, x, y, 1, height);
+        }
+
+        if (y >= 0) {
+            this.FillRectangle(c, x, y, width, 1);
+        }
+
+        // Offset by width of border; in this case, hardcoded to be 1.
+        if (x + width - 1 < this.Width) {
+            this.FillRectangle(c, x + width - 1, y, 1, height);
+        }
+
+        if (y + height - 1 < this.Height) {
+            this.FillRectangle(c, x, y + height - 1, width, 1);
+        }
+
+        return this;
+    }
+
     public char GetChar(int x, int y) {
         ArgumentOutOfRangeException.ThrowIfNegative(x);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(x, width);
@@ -57,22 +78,12 @@ public class StringMap(int width, int height) {
         return this.setChar(c, x, y);
     }
 
-    private char getChar(int x, int y) {
-        return this.strChr[width * y + x];
-    }
-
-    private StringMap setChar(char c, int x, int y) {
-        this.strChr[width * y + x] = c;
-        return this;
-    }
-
     public StringMap DrawStringMap(StringMap sm, int x, int y) {
         return this.DrawStringMap(sm, x, y, sm.Width, sm.Height);
     }
-    
+
     public StringMap DrawStringMap(StringMap sm, int x, int y, int width, int height,
         DrawStringMapMode mode = DrawStringMapMode.CROP) {
-        
         int startY = Math.Clamp(y, 0, this.Height);
         int endY = Math.Clamp(y + height, 0, this.Height);
 
@@ -81,24 +92,24 @@ public class StringMap(int width, int height) {
 
         int rectW = endX - startX;
         int rectH = endY - startY;
-        
+
         switch (mode) {
             case DrawStringMapMode.CROP:
                 for (int i = 0; i < rectW * rectH; i++) {
                     int originX = i % rectW;
                     int originY = i / rectW;
-                    
+
                     int targetX = i % rectW + startX;
                     int targetY = i / rectW + startY;
-        
+
                     this.setChar(sm.getChar(originX, originY), targetX, targetY);
                 }
+
                 break;
             default:
                 throw new ArgumentException(null, nameof(mode));
-            
         }
-        
+
         return this;
     }
 
@@ -132,5 +143,14 @@ public class StringMap(int width, int height) {
         }
 
         return sb.ToString();
+    }
+    
+    private char getChar(int x, int y) {
+        return this.strChr[width * y + x];
+    }
+
+    private StringMap setChar(char c, int x, int y) {
+        this.strChr[width * y + x] = c;
+        return this;
     }
 }
