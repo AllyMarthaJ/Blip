@@ -19,9 +19,10 @@ public class TruncationFormatterTests {
         var fmt = new TruncationFormatter(alignment);
 
         var formatted = fmt.FormatString("panda", this.width, this.height);
-        
-        Assert.That(formatted, Has.Length.EqualTo(1));
-        Assert.That(formatted, Has.Exactly(1).EqualTo("panda"));
+        var fmtString = String.Join("", formatted);
+
+        Assert.That(formatted, Has.Length.EqualTo(this.width));
+        Assert.That(fmtString,Is.EqualTo("panda"));
     }
 
     [Test]
@@ -30,8 +31,9 @@ public class TruncationFormatterTests {
         var fmt = new TruncationFormatter(alignment);
         
         var formatted = fmt.FormatString("pandas", this.width, this.height);
-
-        Assert.That(formatted, Has.Length.EqualTo(1));
-        Assert.That(formatted, Has.Exactly(1).EqualTo("pa..."));
+        var fmtString = String.Join("", formatted);
+        
+        Assert.That(formatted, Has.Length.EqualTo(this.width));
+        Assert.That(fmtString, Is.EqualTo("pa..."));
     }
 }
