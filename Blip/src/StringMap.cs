@@ -1,16 +1,11 @@
 ﻿using System.Text;
-using System.Text.RegularExpressions;
 using Blip.Transforms;
+using Blip.Formatters;
 
 namespace Blip;
 
-public enum StringMapSizeTransform {
-    CROP = 0
-}
-
 public class StringMap(int width, int height) {
     public const char EMPTY_CHAR = ' ';
-    private static readonly Regex SPLIT_LINE_REGEX = new(@"\r?\n", RegexOptions.Compiled);
 
     public int Width { get; } = width;
     public int Height { get; } = height;
@@ -110,8 +105,18 @@ public class StringMap(int width, int height) {
         return this;
     }
 
+    public StringMap DrawString(string str, IStringFormatter stringFmt, int x, int y, int width, int height) {
+        // We could use FromLineDelimitedString here, but the safeguards are 
+        // overkill.
+        var textLines = stringFmt.FormatString(str, width, height);
+        
+        
+        
+        return this;
+    }
+
     public static StringMap FromLineDelimitedString(string str) {
-        string[] lines = SPLIT_LINE_REGEX.Split(str);
+        string[] lines = SharedHelpers.SPLIT_LINE_REGEX.Split(str);
         int[] lengths = lines.Select((line) => line.Length).Distinct().ToArray();
 
         if (lengths.Length != 1) {
