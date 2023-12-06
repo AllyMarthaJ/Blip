@@ -1,9 +1,10 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
+using Blip.Transforms;
 
 namespace Blip;
 
-public enum DrawStringMapMode {
+public enum StringMapSizeTransform {
     CROP = 0
 }
 
@@ -79,11 +80,11 @@ public class StringMap(int width, int height) {
     }
 
     public StringMap DrawStringMap(StringMap sm, int x, int y) {
-        return this.DrawStringMap(sm, x, y, sm.Width, sm.Height);
+        return this.DrawStringMap(sm, x, y, sm.Width, sm.Height, new OriginOnlyTransform());
     }
 
     public StringMap DrawStringMap(StringMap sm, int x, int y, int width, int height,
-        DrawStringMapMode mode = DrawStringMapMode.CROP) {
+        IDrawTransform transform) {
         int startY = Math.Clamp(y, 0, this.Height);
         int endY = Math.Clamp(y + height, 0, this.Height);
 
@@ -93,21 +94,17 @@ public class StringMap(int width, int height) {
         int rectW = endX - startX;
         int rectH = endY - startY;
 
-        switch (mode) {
-            case DrawStringMapMode.CROP:
-                for (int i = 0; i < rectW * rectH; i++) {
-                    int originX = i % rectW;
-                    int originY = i / rectW;
+        for (int i = 0; i < rectW * rectH; i++) {
+            int originX = i % rectW;
+            int originY = i / rectW;
 
-                    int targetX = i % rectW + startX;
-                    int targetY = i / rectW + startY;
+            int destX = i % rectW + startX;
+            int destY = i / rectW + startY;
 
-                    this.setChar(sm.getChar(originX, originY), targetX, targetY);
-                }
-
-                break;
-            default:
-                throw new ArgumentException(null, nameof(mode));
+            this.setChar(
+                transform.Transform(
+                    sm.getChar(originX, originY),
+                    this.getChar(destX, destY)), destX, destY);
         }
 
         return this;
@@ -144,7 +141,7 @@ public class StringMap(int width, int height) {
 
         return sb.ToString();
     }
-    
+
     private char getChar(int x, int y) {
         return this.strChr[width * y + x];
     }
