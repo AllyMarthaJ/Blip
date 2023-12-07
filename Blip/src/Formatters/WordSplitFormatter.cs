@@ -13,6 +13,18 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
         return formattedLines[..maxLines].SelectMany(c => c).ToArray();
     }
 
+    private string spaceLine(StringBuilder sb, int width) {
+        int spaceRemaining = width - sb.Length;
+
+        return alignment switch {
+            Alignment.LEFT => sb + new string(' ', spaceRemaining),
+            Alignment.CENTER => new string(' ', spaceRemaining / 2) + sb +
+                                new string(' ', spaceRemaining - spaceRemaining / 2),
+            Alignment.RIGHT => new string(' ', spaceRemaining),
+            _ => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null)
+        };
+    }
+
     private string[] formatLine(string str, int width) {
         if (str.Length <= width) return new[] { str };
 
@@ -28,7 +40,7 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
             // current line. Pop the line off, with padding.
             if (word.Length > width) {
                 if (sb.Length > 0) {
-                    lines.Add(sb + new string(' ', width - sb.Length));
+                    lines.Add(this.spaceLine(sb, width));
                     sb = new StringBuilder();
                 }
 
@@ -43,7 +55,7 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
                 // Something's already in the builder, and so 
                 // we need enough room for at least one space, plus the word.
                 if (word.Length + sb.Length + 1 > width) {
-                    lines.Add(sb + new string(' ', width - sb.Length));
+                    lines.Add(this.spaceLine(sb, width));
                     sb = new StringBuilder(word);
                 }
                 else {
@@ -53,7 +65,7 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
         }
 
         // Finished adding all the words.
-        lines.Add(sb + new string(' ', width - sb.Length));
+        lines.Add(this.spaceLine(sb, width));
 
         return lines.ToArray();
     }
