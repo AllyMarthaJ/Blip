@@ -132,8 +132,8 @@ public class TruncationFormatterTests {
         StringMap sm =
             new StringMap(w + 2, h + 2)
                 .DrawRectangle('#', 0, 0, w + 2, h + 2)
-                .DrawString(str, new WordSplitFormatter(Alignment.LEFT), 1, 1, w, h)
-                .DrawStringMap(background, opts, 0, 0, w + 2, h + 2);
+                .DrawString(str, new WordSplitFormatter(Alignment.CENTER), 1, 1, w, h);
+                // .DrawStringMap(background, opts, 0, 0, w + 2, h + 2);
 
         Console.WriteLine(sm);
     }
