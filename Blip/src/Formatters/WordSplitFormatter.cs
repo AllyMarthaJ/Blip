@@ -3,13 +3,14 @@ using System.Text;
 
 namespace Blip.Formatters; 
 
-public class WordSplitFormatter(Alignment alignment)  {
+public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
     public char[] FormatString(string str, int width, int height) {
         string[] lines = SharedHelpers.SPLIT_LINE_REGEX.Split(str);
         string[] formattedLines = lines.SelectMany((line) => this.formatLine(line, width)).ToArray();
 
         int maxLines = Math.Min(formattedLines.Length, height);
 
+        // TODO: Add ellipses when truncating lines.
         return formattedLines[..maxLines].SelectMany((c) => c).ToArray();
     }
 

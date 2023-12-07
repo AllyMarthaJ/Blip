@@ -108,9 +108,13 @@ public class StringMap(int width, int height) {
     public StringMap DrawString(string str, IStringFormatter stringFmt, int x, int y, int width, int height) {
         // We could use FromLineDelimitedString here, but the safeguards are 
         // overkill.
-        var textLines = stringFmt.FormatString(str, width, height);
-        
-        
+        var textBuffer = stringFmt.FormatString(str, width, height);
+
+        for (int i = 0; i < textBuffer.Length; i++) {
+            int _x = i % width + x;
+            int _y = i / width + y;
+            this.setChar(textBuffer[i], _x, _y);
+        }
         
         return this;
     }

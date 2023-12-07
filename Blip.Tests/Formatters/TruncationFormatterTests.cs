@@ -1,4 +1,5 @@
 using Blip.Formatters;
+using Blip.Transforms;
 
 namespace Blip.Tests.Formatters;
 
@@ -115,5 +116,23 @@ public class TruncationFormatterTests {
 
         Assert.That(formatted, Has.Length.EqualTo(this.height * this.width));
         Assert.That(fmtString, Is.EqualTo("pandapandapanda"));
+    }
+
+    [Test]
+    public void Blah() {
+        var w = 30;
+        var h = 5;
+        var str =
+            "Ally is an amazing panda who loves to do maths and panda all day long. She really likes pandas and loves bunnies so much, you know?"; 
+        var background = new StringMap(w + 2, h + 2).FillRectangle('+', 0, 0, w + 2, h + 2);
+        var opts = new UnionTransform(new UnionTransformOptions()
+            { Blank = new[] { ' ' }, PreserveTarget = PreservationMode.DESTINATION });
+        var sm = 
+            new StringMap(w + 2, h + 2)
+                .DrawRectangle('#', 0, 0, w + 2, h + 2)
+                .DrawString(str, new WordSplitFormatter(Alignment.LEFT), 1, 1, w, h)
+                .DrawStringMap(background, 0, 0, w+2, h+2, opts);
+
+        Console.WriteLine(sm);
     }
 }
