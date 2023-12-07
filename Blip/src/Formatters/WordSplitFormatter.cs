@@ -1,22 +1,21 @@
-using System.Collections;
 using System.Text;
 
-namespace Blip.Formatters; 
+namespace Blip.Formatters;
 
 public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
     public char[] FormatString(string str, int width, int height) {
         string[] lines = SharedHelpers.SPLIT_LINE_REGEX.Split(str);
-        string[] formattedLines = lines.SelectMany((line) => this.formatLine(line, width)).ToArray();
+        string[] formattedLines = lines.SelectMany(line => this.formatLine(line, width)).ToArray();
 
         int maxLines = Math.Min(formattedLines.Length, height);
 
         // TODO: Add ellipses when truncating lines.
-        return formattedLines[..maxLines].SelectMany((c) => c).ToArray();
+        return formattedLines[..maxLines].SelectMany(c => c).ToArray();
     }
 
     private string[] formatLine(string str, int width) {
         if (str.Length <= width) return new[] { str };
-        
+
         // TODO: Handle all whitespace.
         StringBuilder sb = new();
         var words = new Queue<string>(str.Split(" "));
@@ -32,6 +31,7 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
                     lines.Add(sb + new string(' ', width - sb.Length));
                     sb = new StringBuilder();
                 }
+
                 lines.Add(word[..(width - 3)] + "...");
                 continue;
             }

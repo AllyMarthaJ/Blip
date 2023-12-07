@@ -8,7 +8,7 @@ public class TruncationFormatterTests {
     private static object[] AlignmentInvariantSource = {
         new object[] { Alignment.LEFT },
         new object[] { Alignment.CENTER },
-        new object[] { Alignment.RIGHT },
+        new object[] { Alignment.RIGHT }
     };
 
     private readonly int width = 5;
@@ -19,8 +19,8 @@ public class TruncationFormatterTests {
     public void SingleLineEqualBoundsDoesNothing(Alignment alignment) {
         var fmt = new TruncationFormatter(alignment);
 
-        var formatted = fmt.FormatString("panda", this.width, this.height);
-        var fmtString = String.Join("", formatted);
+        char[] formatted = fmt.FormatString("panda", this.width, this.height);
+        string fmtString = String.Join("", formatted);
 
         Assert.That(formatted, Has.Length.EqualTo(this.width));
         Assert.That(fmtString, Is.EqualTo("panda"));
@@ -85,8 +85,8 @@ public class TruncationFormatterTests {
     public void MultiLineEqualBoundsDoesNothing(Alignment alignment) {
         var fmt = new TruncationFormatter(alignment);
 
-        var formatted = fmt.FormatString("panda\npanda\npanda", this.width, this.height);
-        var fmtString = String.Join("", formatted);
+        char[] formatted = fmt.FormatString("panda\npanda\npanda", this.width, this.height);
+        string fmtString = String.Join("", formatted);
 
         Assert.That(formatted, Has.Length.EqualTo(this.height * this.width));
         Assert.That(fmtString, Is.EqualTo("pandapandapanda"));
@@ -111,8 +111,8 @@ public class TruncationFormatterTests {
     public void MoreThanAllowedHeightLinesTruncatesLines(Alignment alignment) {
         var fmt = new TruncationFormatter(alignment);
 
-        var formatted = fmt.FormatString("panda\npanda\npanda\npanda", this.width, this.height);
-        var fmtString = String.Join("", formatted);
+        char[] formatted = fmt.FormatString("panda\npanda\npanda\npanda", this.width, this.height);
+        string fmtString = String.Join("", formatted);
 
         Assert.That(formatted, Has.Length.EqualTo(this.height * this.width));
         Assert.That(fmtString, Is.EqualTo("pandapandapanda"));
@@ -123,15 +123,17 @@ public class TruncationFormatterTests {
         var w = 30;
         var h = 5;
         var str =
-            "Ally is an amazing panda who loves to do maths and panda all day long. She really likes pandas and loves bunnies so much, you know?"; 
-        var background = new StringMap(w + 2, h + 2).FillRectangle('+', 0, 0, w + 2, h + 2);
-        var opts = new UnionTransform(new UnionTransformOptions()
+            "Ally is an amazing panda who loves to do maths and panda all day long. She really likes pandas and loves bunnies so much, you know?";
+        var opts = new UnionTransform(new UnionTransformOptions
             { Blank = new[] { ' ' }, PreserveTarget = PreservationMode.DESTINATION });
-        var sm = 
+        StringMap background =
+            new StringMap(w + 2, h + 2)
+                .FillRectangle('+', 0, 0, w + 2, h + 2);
+        StringMap sm =
             new StringMap(w + 2, h + 2)
                 .DrawRectangle('#', 0, 0, w + 2, h + 2)
                 .DrawString(str, new WordSplitFormatter(Alignment.LEFT), 1, 1, w, h)
-                .DrawStringMap(background, 0, 0, w+2, h+2, opts);
+                .DrawStringMap(background, opts, 0, 0, w + 2, h + 2);
 
         Console.WriteLine(sm);
     }

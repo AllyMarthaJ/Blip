@@ -24,7 +24,7 @@ public class UnionTransformTests {
     [Test]
     [TestCaseSource(nameof(PreserveOriginTestsSource))]
     public void UnionPreserveOriginTests(char left, char right, char expectedLeft, char expectedRight) {
-        var transform = new UnionTransform(new UnionTransformOptions()
+        var transform = new UnionTransform(new UnionTransformOptions
             { PreserveTarget = PreservationMode.ORIGIN, Blank = PreserveOriginTestsBlank });
 
         // Tests Faux-commutativity.
@@ -50,7 +50,7 @@ public class UnionTransformTests {
     [Test]
     [TestCaseSource(nameof(PreserveDestTestsSource))]
     public void UnionPreserveDestTests(char left, char right, char expectedLeft, char expectedRight) {
-        var transform = new UnionTransform(new UnionTransformOptions()
+        var transform = new UnionTransform(new UnionTransformOptions
             { PreserveTarget = PreservationMode.DESTINATION, Blank = PreserveDestTestsBlank });
 
         // Tests Faux-commutativity.

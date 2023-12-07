@@ -1,4 +1,4 @@
-namespace Blip.Transforms; 
+namespace Blip.Transforms;
 
 public interface IDrawTransform {
     // TODO: Allow context-specific transforms.
