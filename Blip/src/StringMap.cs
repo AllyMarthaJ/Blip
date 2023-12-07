@@ -128,7 +128,9 @@ public class StringMap(int width, int height) {
 
     public override string ToString() {
         StringBuilder sb = new();
-        for (var i = 0; i < width * height; i += width) sb.AppendLine(String.Join("", this.strChr[i..(i + width)]));
+        for (var i = 0; i < width * height; i += width) {
+            sb.AppendLine(String.Join("", this.strChr[i..(i + width)]));
+        }
 
         // Prune the newline -_-
         if (sb.Length > 1) sb.Remove(sb.Length - 1, 1);

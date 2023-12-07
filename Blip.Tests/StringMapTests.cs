@@ -192,7 +192,9 @@ public class StringMapTests {
             var expected = 'x';
             Assert.That(this.map.FillRectangle(expected, 0, 0, 1, this.height).ToString(),
                 Has.Exactly(this.height).EqualTo(expected));
-            for (var y = 0; y < this.height; y++) Assert.That(this.map.GetChar(0, y), Is.EqualTo(expected));
+            for (var y = 0; y < this.height; y++) {
+                Assert.That(this.map.GetChar(0, y), Is.EqualTo(expected));
+            }
         }
 
         [Test]
@@ -200,7 +202,9 @@ public class StringMapTests {
             var expected = 'x';
             Assert.That(this.map.FillRectangle(expected, 0, 0, this.width, 1).ToString(),
                 Has.Exactly(this.width).EqualTo(expected));
-            for (var x = 0; x < this.width; x++) Assert.That(this.map.GetChar(x, 0), Is.EqualTo(expected));
+            for (var x = 0; x < this.width; x++) {
+                Assert.That(this.map.GetChar(x, 0), Is.EqualTo(expected));
+            }
         }
 
         [Test]
@@ -213,8 +217,9 @@ public class StringMapTests {
                 (this.width - 2 * border) * (this.height - 2 * border)).EqualTo(expected));
 
             for (int y = startY; y < endY; y++)
-            for (int x = startX; x < endX; x++)
+            for (int x = startX; x < endX; x++) {
                 Assert.That(this.map.GetChar(x, y), Is.EqualTo(expected));
+            }
         }
 
         [Test]
@@ -358,8 +363,9 @@ public class StringMapTests {
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + 2 * this.height - 4).EqualTo(this.filler));
 
             for (var y = 1; y < this.height - 1; y++)
-            for (var x = 1; x < this.width - 1; x++)
+            for (var x = 1; x < this.width - 1; x++) {
                 Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+            }
         }
 
         [Test]
@@ -369,8 +375,9 @@ public class StringMapTests {
             Assert.That(this.map.ToString(), Has.Exactly(0).EqualTo(this.filler));
 
             for (var y = 0; y < this.height; y++)
-            for (var x = 0; x < this.width; x++)
+            for (var x = 0; x < this.width; x++) {
                 Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+            }
         }
 
         [Test]
@@ -380,8 +387,9 @@ public class StringMapTests {
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + this.height - 2).EqualTo(this.filler));
 
             for (var y = 1; y < this.height - 1; y++)
-            for (var x = 0; x < this.width - 1; x++)
+            for (var x = 0; x < this.width - 1; x++) {
                 Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+            }
         }
 
         [Test]
@@ -391,8 +399,9 @@ public class StringMapTests {
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.height + this.width - 2).EqualTo(this.filler));
 
             for (var y = 0; y < this.height - 1; y++)
-            for (var x = 1; x < this.width - 1; x++)
+            for (var x = 1; x < this.width - 1; x++) {
                 Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+            }
         }
 
         [Test]
@@ -402,8 +411,9 @@ public class StringMapTests {
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + this.height - 2).EqualTo(this.filler));
 
             for (var y = 1; y < this.height - 1; y++)
-            for (var x = 1; x < this.width; x++)
+            for (var x = 1; x < this.width; x++) {
                 Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+            }
         }
 
         [Test]
@@ -413,8 +423,9 @@ public class StringMapTests {
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.height + this.width - 2).EqualTo(this.filler));
 
             for (var y = 1; y < this.height; y++)
-            for (var x = 1; x < this.width - 1; x++)
+            for (var x = 1; x < this.width - 1; x++) {
                 Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
+            }
         }
 
         [Test]
