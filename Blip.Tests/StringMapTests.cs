@@ -268,7 +268,7 @@ public class StringMapTests {
         public void CanDrawSourceMapCroppedToZeroWidth() {
             var emptyMap = new StringMap(this.targetWidth, this.targetHeight);
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, 0, 0, this.targetHeight, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, 0, 0, this.targetHeight);
 
             Assert.That(this.targetMap.ToString(), Is.EqualTo(emptyMap.ToString()));
         }
@@ -277,7 +277,7 @@ public class StringMapTests {
         public void CanDrawSourceMapCroppedToZeroHeight() {
             var emptyMap = new StringMap(this.targetWidth, this.targetHeight);
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, 0, this.targetWidth, 0, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, 0, this.targetWidth, 0);
 
             Assert.That(this.targetMap.ToString(), Is.EqualTo(emptyMap.ToString()));
         }
@@ -287,7 +287,7 @@ public class StringMapTests {
             int cols = this.targetWidth / 2;
             int rem = this.targetWidth - cols;
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, 0, cols, this.targetHeight, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, 0, cols, this.targetHeight);
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(cols * this.targetHeight).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetHeight).EqualTo(StringMap.EMPTY_CHAR));
@@ -298,7 +298,7 @@ public class StringMapTests {
             int rows = this.targetHeight / 2;
             int rem = this.targetHeight - rows;
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, 0, this.targetWidth, rows, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, 0, this.targetWidth, rows);
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(rows * this.targetWidth).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetWidth).EqualTo(StringMap.EMPTY_CHAR));
@@ -309,7 +309,7 @@ public class StringMapTests {
             int cols = this.targetWidth / 2;
             int rem = this.targetWidth - cols;
 
-            this.targetMap.DrawStringMap(this.sourceMap, cols, 0, this.targetWidth, this.targetHeight, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, cols, 0, this.targetWidth, this.targetHeight);
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetHeight).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(cols * this.targetHeight).EqualTo(StringMap.EMPTY_CHAR));
@@ -320,7 +320,7 @@ public class StringMapTests {
             int rows = this.targetHeight / 2;
             int rem = this.targetHeight - rows;
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, rows, this.targetWidth, this.targetHeight, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, rows, this.targetWidth, this.targetHeight);
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetWidth).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(rows * this.targetWidth).EqualTo(StringMap.EMPTY_CHAR));
