@@ -347,15 +347,6 @@ public class StringMapTests {
 
         private StringMap map;
 
-        private object[] DrawEntireRectangleWithExceedingBoundarySource = {
-            new object[] { 0, 0, width, height, 2 * width + 2 * height - 4 },
-            new object[] { -1, -1, width + 2, height + 2 },
-            new object[] { -1, 0, width + 1, height },
-            new object[] { 0, -1, width, height + 1 },
-            new object[] { 0, 0, width + 1, height },
-            new object[] { 0, 0, width, height + 1 }
-        };
-
         [Test]
         public void DrawRectangleOnEntireStringMap() {
             this.map.DrawRectangle(this.filler, 0, 0, this.width, this.height);
