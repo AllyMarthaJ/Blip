@@ -70,7 +70,7 @@ public class StringMapTests {
             public void MultipleEmptyLines() {
                 var expected = "\n\n\n";
 
-                Assert.That(StringMap.FromLineDelimitedString(expected).ToString(), Is.EqualTo(String.Empty));
+                Assert.That(StringMap.FromLineDelimitedString(expected).ToString(), Is.EqualTo(string.Empty));
             }
 
             [Test]
@@ -83,8 +83,13 @@ public class StringMapTests {
     [TestFixture]
     [TestFixtureSource(nameof(SetAndGetCharTestsSource))]
     public class SetAndGetCharTests(int width, int height) {
-        private int width = width;
-        private int height = height;
+        [SetUp]
+        public void Setup() {
+            this.map = new StringMap(this.width, this.height);
+        }
+
+        private readonly int width = width;
+        private readonly int height = height;
 
         private StringMap map;
 
@@ -94,16 +99,11 @@ public class StringMapTests {
             new object[] { 10, 15 }
         };
 
-        [SetUp]
-        public void Setup() {
-            this.map = new StringMap(this.width, this.height);
-        }
-
         [Test]
         public void CanSetAndGetValidCharacterInEveryValidPosition() {
             var expected = 'a';
 
-            for (int i = 0; i < this.width * this.height; i++) {
+            for (var i = 0; i < this.width * this.height; i++) {
                 int x = i % this.width;
                 int y = i / this.width;
 
@@ -116,7 +116,7 @@ public class StringMapTests {
 
         [Test]
         public void XCoordinatePrecedesStart_Throws() {
-            var x = -1;
+            int x = -1;
 
             Assert.Throws<ArgumentOutOfRangeException>(() => this.map.GetChar(x, 0));
             Assert.Throws<ArgumentOutOfRangeException>(() => this.map.SetChar('a', x, 0));
@@ -124,7 +124,7 @@ public class StringMapTests {
 
         [Test]
         public void XCoordinateExceedsEnd_Throws() {
-            var x = this.width;
+            int x = this.width;
 
             Assert.Throws<ArgumentOutOfRangeException>(() => this.map.GetChar(x, 0));
             Assert.Throws<ArgumentOutOfRangeException>(() => this.map.SetChar('a', x, 0));
@@ -132,7 +132,7 @@ public class StringMapTests {
 
         [Test]
         public void YCoordinateExceedsTop_Throws() {
-            var y = -1;
+            int y = -1;
 
             Assert.Throws<ArgumentOutOfRangeException>(() => this.map.GetChar(0, y));
             Assert.Throws<ArgumentOutOfRangeException>(() => this.map.SetChar('a', 0, y));
@@ -140,7 +140,7 @@ public class StringMapTests {
 
         [Test]
         public void YCoordinateExceedsBottom_Throws() {
-            var y = this.height;
+            int y = this.height;
 
             Assert.Throws<ArgumentOutOfRangeException>(() => this.map.GetChar(0, y));
             Assert.Throws<ArgumentOutOfRangeException>(() => this.map.SetChar('a', 0, y));
@@ -150,8 +150,13 @@ public class StringMapTests {
     [TestFixture]
     [TestFixtureSource(nameof(FillRectangleTestsSource))]
     public class FillRectangleTests(int width, int height) {
-        private int width = width;
-        private int height = height;
+        [SetUp]
+        public void Setup() {
+            this.map = new StringMap(this.width, this.height);
+        }
+
+        private readonly int width = width;
+        private readonly int height = height;
 
         private static object[] FillRectangleTestsSource = {
             new object[] { 15, 10 },
@@ -160,11 +165,6 @@ public class StringMapTests {
         };
 
         private StringMap map;
-
-        [SetUp]
-        public void Setup() {
-            this.map = new StringMap(this.width, this.height);
-        }
 
         [Test]
         public void FillEntireStringMap() {
@@ -192,7 +192,7 @@ public class StringMapTests {
             var expected = 'x';
             Assert.That(this.map.FillRectangle(expected, 0, 0, 1, this.height).ToString(),
                 Has.Exactly(this.height).EqualTo(expected));
-            for (int y = 0; y < this.height; y++) {
+            for (var y = 0; y < this.height; y++) {
                 Assert.That(this.map.GetChar(0, y), Is.EqualTo(expected));
             }
         }
@@ -202,7 +202,7 @@ public class StringMapTests {
             var expected = 'x';
             Assert.That(this.map.FillRectangle(expected, 0, 0, this.width, 1).ToString(),
                 Has.Exactly(this.width).EqualTo(expected));
-            for (int x = 0; x < this.width; x++) {
+            for (var x = 0; x < this.width; x++) {
                 Assert.That(this.map.GetChar(x, 0), Is.EqualTo(expected));
             }
         }
@@ -216,10 +216,9 @@ public class StringMapTests {
             Assert.That(this.map.FillRectangle(expected, startX, startY, endX, endY).ToString(), Has.Exactly(
                 (this.width - 2 * border) * (this.height - 2 * border)).EqualTo(expected));
 
-            for (int y = startY; y < endY; y++) {
-                for (int x = startX; x < endX; x++) {
-                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(expected));
-                }
+            for (int y = startY; y < endY; y++)
+            for (int x = startX; x < endX; x++) {
+                Assert.That(this.map.GetChar(x, y), Is.EqualTo(expected));
             }
         }
 
@@ -234,29 +233,29 @@ public class StringMapTests {
     [TestFixture]
     [TestFixtureSource(nameof(DrawStringMapTestsSource))]
     public class DrawStringMapTests(int width, int height) {
-        private int targetWidth = width;
-        private int targetHeight = height;
-        private char filler = 'a';
+        [SetUp]
+        public void Setup() {
+            string line = string.Join("", Enumerable.Repeat(this.filler, this.targetWidth));
+            string grid = string.Join("\n", Enumerable.Repeat(line, this.targetHeight));
+
+            this.sourceMap = StringMap.FromLineDelimitedString(grid);
+            this.targetMap = new StringMap(this.targetWidth, this.targetHeight);
+        }
+
+        private readonly int targetWidth = width;
+        private readonly int targetHeight = height;
+        private readonly char filler = 'a';
 
         private StringMap sourceMap;
         private StringMap targetMap;
 
-        private IDrawTransform transform = new OriginOnlyTransform();
+        private readonly IDrawTransform transform = new OriginOnlyTransform();
 
         private static object[] DrawStringMapTestsSource = {
             new object[] { 15, 10 },
             new object[] { 10, 10 },
             new object[] { 10, 15 }
         };
-
-        [SetUp]
-        public void Setup() {
-            var line = String.Join("", Enumerable.Repeat(this.filler, this.targetWidth));
-            var grid = String.Join("\n", Enumerable.Repeat(line, this.targetHeight));
-
-            this.sourceMap = StringMap.FromLineDelimitedString(grid);
-            this.targetMap = new StringMap(this.targetWidth, this.targetHeight);
-        }
 
         [Test]
         public void CanDrawSourceMapUncropped() {
@@ -269,7 +268,7 @@ public class StringMapTests {
         public void CanDrawSourceMapCroppedToZeroWidth() {
             var emptyMap = new StringMap(this.targetWidth, this.targetHeight);
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, 0, 0, this.targetHeight, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, 0, 0, this.targetHeight);
 
             Assert.That(this.targetMap.ToString(), Is.EqualTo(emptyMap.ToString()));
         }
@@ -278,17 +277,17 @@ public class StringMapTests {
         public void CanDrawSourceMapCroppedToZeroHeight() {
             var emptyMap = new StringMap(this.targetWidth, this.targetHeight);
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, 0, this.targetWidth, 0, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, 0, this.targetWidth, 0);
 
             Assert.That(this.targetMap.ToString(), Is.EqualTo(emptyMap.ToString()));
         }
 
         [Test]
         public void CanDrawHalfColumnsByCropFromSourceMap() {
-            var cols = this.targetWidth / 2;
-            var rem = this.targetWidth - cols;
+            int cols = this.targetWidth / 2;
+            int rem = this.targetWidth - cols;
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, 0, cols, this.targetHeight, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, 0, cols, this.targetHeight);
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(cols * this.targetHeight).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetHeight).EqualTo(StringMap.EMPTY_CHAR));
@@ -296,10 +295,10 @@ public class StringMapTests {
 
         [Test]
         public void CanDrawHalfRowsByCropFromSourceMap() {
-            var rows = this.targetHeight / 2;
-            var rem = this.targetHeight - rows;
+            int rows = this.targetHeight / 2;
+            int rem = this.targetHeight - rows;
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, 0, this.targetWidth, rows, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, 0, this.targetWidth, rows);
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(rows * this.targetWidth).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetWidth).EqualTo(StringMap.EMPTY_CHAR));
@@ -307,10 +306,10 @@ public class StringMapTests {
 
         [Test]
         public void CanDrawHalfColumnsByOffsetFromSourceMap() {
-            var cols = this.targetWidth / 2;
-            var rem = this.targetWidth - cols;
+            int cols = this.targetWidth / 2;
+            int rem = this.targetWidth - cols;
 
-            this.targetMap.DrawStringMap(this.sourceMap, cols, 0, this.targetWidth, this.targetHeight, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, cols, 0, this.targetWidth, this.targetHeight);
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetHeight).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(cols * this.targetHeight).EqualTo(StringMap.EMPTY_CHAR));
@@ -318,10 +317,10 @@ public class StringMapTests {
 
         [Test]
         public void CanDrawHalfRowsByOffsetFromSourceMap() {
-            var rows = this.targetHeight / 2;
-            var rem = this.targetHeight - rows;
+            int rows = this.targetHeight / 2;
+            int rem = this.targetHeight - rows;
 
-            this.targetMap.DrawStringMap(this.sourceMap, 0, rows, this.targetWidth, this.targetHeight, this.transform);
+            this.targetMap.DrawStringMap(this.sourceMap, this.transform, 0, rows, this.targetWidth, this.targetHeight);
 
             Assert.That(this.targetMap.ToString(), Has.Exactly(rem * this.targetWidth).EqualTo(this.filler));
             Assert.That(this.targetMap.ToString(), Has.Exactly(rows * this.targetWidth).EqualTo(StringMap.EMPTY_CHAR));
@@ -331,9 +330,14 @@ public class StringMapTests {
     [TestFixture]
     [TestFixtureSource(nameof(DrawRectangleTestsSource))]
     public class DrawRectangleTests(int width, int height) {
-        private int width = width;
-        private int height = height;
-        private char filler = 'x';
+        [SetUp]
+        public void Setup() {
+            this.map = new StringMap(this.width, this.height);
+        }
+
+        private readonly int width = width;
+        private readonly int height = height;
+        private readonly char filler = 'x';
 
         private static object[] DrawRectangleTestsSource = {
             new object[] { 15, 10 },
@@ -343,30 +347,15 @@ public class StringMapTests {
 
         private StringMap map;
 
-        [SetUp]
-        public void Setup() {
-            this.map = new StringMap(this.width, this.height);
-        }
-
-        private object[] DrawEntireRectangleWithExceedingBoundarySource = {
-            new object[] { 0, 0, width, height, 2 * width + 2 * height - 4 },
-            new object[] { -1, -1, width + 2, height + 2, },
-            new object[] { -1, 0, width + 1, height },
-            new object[] { 0, -1, width, height + 1 },
-            new object[] { 0, 0, width + 1, height },
-            new object[] { 0, 0, width, height + 1 },
-        };
-
         [Test]
         public void DrawRectangleOnEntireStringMap() {
             this.map.DrawRectangle(this.filler, 0, 0, this.width, this.height);
 
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + 2 * this.height - 4).EqualTo(this.filler));
 
-            for (int y = 1; y < this.height - 1; y++) {
-                for (int x = 1; x < this.width - 1; x++) {
-                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
-                }
+            for (var y = 1; y < this.height - 1; y++)
+            for (var x = 1; x < this.width - 1; x++) {
+                Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
             }
         }
 
@@ -376,10 +365,9 @@ public class StringMapTests {
 
             Assert.That(this.map.ToString(), Has.Exactly(0).EqualTo(this.filler));
 
-            for (int y = 0; y < this.height; y++) {
-                for (int x = 0; x < this.width; x++) {
-                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
-                }
+            for (var y = 0; y < this.height; y++)
+            for (var x = 0; x < this.width; x++) {
+                Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
             }
         }
 
@@ -389,10 +377,9 @@ public class StringMapTests {
 
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + this.height - 2).EqualTo(this.filler));
 
-            for (int y = 1; y < this.height - 1; y++) {
-                for (int x = 0; x < this.width - 1; x++) {
-                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
-                }
+            for (var y = 1; y < this.height - 1; y++)
+            for (var x = 0; x < this.width - 1; x++) {
+                Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
             }
         }
 
@@ -402,10 +389,9 @@ public class StringMapTests {
 
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.height + this.width - 2).EqualTo(this.filler));
 
-            for (int y = 0; y < this.height - 1; y++) {
-                for (int x = 1; x < this.width - 1; x++) {
-                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
-                }
+            for (var y = 0; y < this.height - 1; y++)
+            for (var x = 1; x < this.width - 1; x++) {
+                Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
             }
         }
 
@@ -415,10 +401,9 @@ public class StringMapTests {
 
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.width + this.height - 2).EqualTo(this.filler));
 
-            for (int y = 1; y < this.height - 1; y++) {
-                for (int x = 1; x < this.width; x++) {
-                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
-                }
+            for (var y = 1; y < this.height - 1; y++)
+            for (var x = 1; x < this.width; x++) {
+                Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
             }
         }
 
@@ -428,10 +413,9 @@ public class StringMapTests {
 
             Assert.That(this.map.ToString(), Has.Exactly(2 * this.height + this.width - 2).EqualTo(this.filler));
 
-            for (int y = 1; y < this.height; y++) {
-                for (int x = 1; x < this.width - 1; x++) {
-                    Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
-                }
+            for (var y = 1; y < this.height; y++)
+            for (var x = 1; x < this.width - 1; x++) {
+                Assert.That(this.map.GetChar(x, y), Is.EqualTo(StringMap.EMPTY_CHAR));
             }
         }
 
@@ -439,7 +423,7 @@ public class StringMapTests {
         public void DrawCentredRectangle() {
             var border = 3;
             int startX = border, startY = border, width = this.width - 2 * border, height = this.height - 2 * border;
-            
+
             this.map.DrawRectangle(this.filler, startX, startY, width, height);
 
             Assert.That(this.map.ToString(), Has.Exactly(

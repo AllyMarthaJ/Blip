@@ -1,14 +1,14 @@
 namespace Blip.Transforms;
 
 /// <summary>
-/// As the idea of a union only really works over boolean logic,
-/// we lose commutativity when we extend it to anything else.
-/// This means that, in the event of a comparison yielding no useful
-/// result, we should pick something to preserve.
+///     As the idea of a union only really works over boolean logic,
+///     we lose commutativity when we extend it to anything else.
+///     This means that, in the event of a comparison yielding no useful
+///     result, we should pick something to preserve.
 /// </summary>
 public enum PreservationMode {
     ORIGIN,
-    DESTINATION,
+    DESTINATION
 }
 
 public struct UnionTransformOptions {
