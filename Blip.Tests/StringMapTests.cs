@@ -1,3 +1,6 @@
+using Blip.Diagram.Components;
+using Blip.Diagram.Styles;
+using Blip.Format;
 using Blip.Transform;
 
 namespace Blip.Tests;
@@ -428,6 +431,24 @@ public class StringMapTests {
 
             Assert.That(this.map.ToString(), Has.Exactly(
                 2 * width + 2 * height - 4).EqualTo(this.filler));
+        }
+
+        [Test]
+        public void Blah() {
+            var title = "Ally is the gayest yeet yeet";
+            var msg =
+                "Ally loves pandas and bunnies and all the things, so it comes as no surprise that she would love boxes.\nDid you know boxes are handy dandy maths things?";
+            Console.WriteLine(
+                new Box(title,
+                    msg) {
+                    MaxWidth = 60, MaxHeight = 13,
+                    TitlePadding = new Padding() { Top = 1, Left = 1, Right = 1, Bottom = 1 },
+                    MessagePadding = new Padding() { Top = 1, Left = 3, Right = 3, Bottom = 1 },
+                    TitleAlignment = Alignment.CENTER,
+                    MessageAlignment = Alignment.JUSTIFY,
+                    BorderWidth =1,
+                    BorderHeight = 1,
+                }.AsStringMap().ToString());
         }
     }
 }
