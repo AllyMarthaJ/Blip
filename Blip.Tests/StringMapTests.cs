@@ -70,7 +70,7 @@ public class StringMapTests {
             public void MultipleEmptyLines() {
                 var expected = "\n\n\n";
 
-                Assert.That(StringMap.FromLineDelimitedString(expected).ToString(), Is.EqualTo(String.Empty));
+                Assert.That(StringMap.FromLineDelimitedString(expected).ToString(), Is.EqualTo(string.Empty));
             }
 
             [Test]
@@ -235,8 +235,8 @@ public class StringMapTests {
     public class DrawStringMapTests(int width, int height) {
         [SetUp]
         public void Setup() {
-            string line = String.Join("", Enumerable.Repeat(this.filler, this.targetWidth));
-            string grid = String.Join("\n", Enumerable.Repeat(line, this.targetHeight));
+            string line = string.Join("", Enumerable.Repeat(this.filler, this.targetWidth));
+            string grid = string.Join("\n", Enumerable.Repeat(line, this.targetHeight));
 
             this.sourceMap = StringMap.FromLineDelimitedString(grid);
             this.targetMap = new StringMap(this.targetWidth, this.targetHeight);

@@ -21,9 +21,13 @@ public class UnionTransform(UnionTransformOptions options) : IDrawTransform {
         bool isSourceBlank = this.isBlank(sourceChar);
         bool isDestBlank = this.isBlank(destChar);
 
-        if (isSourceBlank && !isDestBlank) return destChar;
+        if (isSourceBlank && !isDestBlank) {
+            return destChar;
+        }
 
-        if (!isSourceBlank && isDestBlank) return sourceChar;
+        if (!isSourceBlank && isDestBlank) {
+            return sourceChar;
+        }
 
         // If the source is also blank, we need to choose whether to use the
         // destination value, or the origin value. They could differ.

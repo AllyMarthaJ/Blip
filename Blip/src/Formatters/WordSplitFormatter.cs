@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Text;
 
 namespace Blip.Formatters;
@@ -17,7 +16,7 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
     private string[] formatLine(string str, int width) {
         // TODO: Handle all whitespace.
         StringBuilder sb = new();
-        var words = new Queue<string>(str.Split(" "));
+        Queue<string> words = new Queue<string>(str.Split(" "));
         List<string> lines = new();
 
         while (words.Count > 0) {

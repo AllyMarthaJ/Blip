@@ -1,11 +1,11 @@
 using System.Text;
 
-namespace Blip.Formatters; 
+namespace Blip.Formatters;
 
 internal static class StringExtensions {
     public static string Justify(this string str, int len, Alignment alignment) {
         int spacesRem = len - str.Length;
-        
+
         return alignment switch {
             Alignment.LEFT => str + new string(' ', spacesRem),
             Alignment.CENTER => new string(' ', spacesRem / 2) + str + new string(' ', spacesRem - spacesRem / 2),
@@ -26,7 +26,7 @@ internal static class StringExtensions {
 
         int totalSpaces = words.Length - 1;
         int spaceRemaining = len - words
-            .Select((w) => w.Length)
+            .Select(w => w.Length)
             .Aggregate(0, (tot, cur) => tot + cur);
         var usedSpace = 0;
 
@@ -43,7 +43,7 @@ internal static class StringExtensions {
                     curIdx = totalSpaces - 1;
                 }
             }
-        
+
             for (var i = 0; i < totalSpaces; i++) {
                 sb.Append(words[i] + new string(' ', spaces[i]));
             }

@@ -13,7 +13,9 @@ public class TruncationFormatter(Alignment alignment) : IStringFormatter {
     private string[] formatLine(string str, int width) {
         // Ensure uniform length. Truncate with ellipses if
         // too short, pad with space if too long.
-        if (str.Length > width) return new[] { str[..(width - 3)] + "..." };
+        if (str.Length > width) {
+            return new[] { str[..(width - 3)] + "..." };
+        }
 
         return new[] { str.Justify(width, alignment) };
     }

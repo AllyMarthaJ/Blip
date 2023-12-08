@@ -36,14 +36,22 @@ public class StringMap(int width, int height) {
     }
 
     public StringMap DrawRectangle(char c, int x, int y, int width, int height) {
-        if (x >= 0) this.FillRectangle(c, x, y, 1, height);
+        if (x >= 0) {
+            this.FillRectangle(c, x, y, 1, height);
+        }
 
-        if (y >= 0) this.FillRectangle(c, x, y, width, 1);
+        if (y >= 0) {
+            this.FillRectangle(c, x, y, width, 1);
+        }
 
         // Offset by width of border; in this case, hardcoded to be 1.
-        if (x + width - 1 < this.Width) this.FillRectangle(c, x + width - 1, y, 1, height);
+        if (x + width - 1 < this.Width) {
+            this.FillRectangle(c, x + width - 1, y, 1, height);
+        }
 
-        if (y + height - 1 < this.Height) this.FillRectangle(c, x, y + height - 1, width, 1);
+        if (y + height - 1 < this.Height) {
+            this.FillRectangle(c, x, y + height - 1, width, 1);
+        }
 
         return this;
     }
@@ -114,13 +122,15 @@ public class StringMap(int width, int height) {
         string[] lines = SharedHelpers.SPLIT_LINE_REGEX.Split(str);
         int[] lengths = lines.Select(line => line.Length).Distinct().ToArray();
 
-        if (lengths.Length != 1) throw new ArgumentException("Lines must all be of same length");
+        if (lengths.Length != 1) {
+            throw new ArgumentException("Lines must all be of same length");
+        }
 
         int width = lengths[0];
         int height = lines.Length;
 
         var sm = new StringMap(width, height) {
-            strChr = String.Join("", lines).ToCharArray()
+            strChr = string.Join("", lines).ToCharArray()
         };
 
         return sm;
@@ -129,11 +139,13 @@ public class StringMap(int width, int height) {
     public override string ToString() {
         StringBuilder sb = new();
         for (var i = 0; i < width * height; i += width) {
-            sb.AppendLine(String.Join("", this.strChr[i..(i + width)]));
+            sb.AppendLine(string.Join("", this.strChr[i..(i + width)]));
         }
 
         // Prune the newline -_-
-        if (sb.Length > 1) sb.Remove(sb.Length - 1, 1);
+        if (sb.Length > 1) {
+            sb.Remove(sb.Length - 1, 1);
+        }
 
         return sb.ToString();
     }
