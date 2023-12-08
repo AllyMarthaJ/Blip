@@ -2,7 +2,7 @@ using System.Text;
 
 namespace Blip.Formatters; 
 
-public static class StringExtensions {
+internal static class StringExtensions {
     public static string Justify(this string str, int len, Alignment alignment) {
         int spacesRem = len - str.Length;
         
