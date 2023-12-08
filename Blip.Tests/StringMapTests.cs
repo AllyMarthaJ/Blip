@@ -441,7 +441,7 @@ public class StringMapTests {
             Console.WriteLine(
                 new Box(title,
                     msg) {
-                    MaxWidth = 60, MaxHeight = 13,
+                    MaxWidth = 30, MaxHeight = 50,
                     TitlePadding = new Padding() { Top = 1, Left = 1, Right = 1, Bottom = 1 },
                     MessagePadding = new Padding() { Top = 1, Left = 3, Right = 3, Bottom = 1 },
                     TitleAlignment = Alignment.CENTER,

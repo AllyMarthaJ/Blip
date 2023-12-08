@@ -54,15 +54,20 @@ public class Box(string title, string message) : IDiagramComponent {
 
         var messageLeft = this.MessagePadding.Left + borderWidth;
         var messageTop = separatorTop + this.MessagePadding.Top + 1;
-
         var messageWidth = width - messageLeft - this.MessagePadding.Right - borderWidth;
-        var messageHeight = height - messageTop - this.MessagePadding.Bottom - borderHeight;
+
+        var actualMessageHeight = messageFmt.MeasureHeight(message, messageWidth);
+        var maxMessageHeight = height - messageTop - this.MessagePadding.Bottom - borderHeight;
+
+        var clampMessageHeight = Math.Min(maxMessageHeight, actualMessageHeight);
+
+        height = messageTop + clampMessageHeight + this.MessagePadding.Bottom + borderHeight;
 
         return new StringMap(width, height)
             .FillRectangle('#', 0, 0, width, height)
             .FillRectangle(' ', borderWidth, borderHeight, width - 2 * borderWidth, height - 2 * borderHeight)
             .DrawString(this.Title, titleFmt, titleLeft, titleTop, titleWidth, 1)
             .FillRectangle('-', separatorLeft, separatorTop, separatorWidth, 1)
-            .DrawString(this.Message, messageFmt, messageLeft, messageTop, messageWidth, messageHeight);
+            .DrawString(this.Message, messageFmt, messageLeft, messageTop, messageWidth, clampMessageHeight);
     }
 }
