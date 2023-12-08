@@ -76,4 +76,13 @@ public class StringExtensionTests(string subStr) {
 
         Assert.That(subStr.Justify(len, alignment), Is.EqualTo(subStr));
     }
+
+    
+    [Test]
+    [TestCaseSource(nameof(AlignmentInvariantTestsSource))]
+    public void AlignWithEqualSpaceDoesNothing(Alignment alignment) {
+        int len = subStr.Length;
+
+        Assert.That(subStr.Justify(len, alignment), Is.EqualTo(subStr));
+    }
 }
