@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Blip.Formatters;
+namespace Blip.Format;
 
 public static class StringExtensions {
     public static string Justify(this string str, int len, Alignment alignment, char padWith = ' ') {

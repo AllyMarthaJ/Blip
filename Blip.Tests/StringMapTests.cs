@@ -1,4 +1,4 @@
-using Blip.Transforms;
+using Blip.Transform;
 
 namespace Blip.Tests;
 

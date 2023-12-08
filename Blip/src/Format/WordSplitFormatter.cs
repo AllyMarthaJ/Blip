@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace Blip.Formatters;
+namespace Blip.Format;
 
 public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
     public char[] FormatString(string str, int width, int height) {

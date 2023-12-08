@@ -1,6 +1,6 @@
 ﻿using System.Text;
-using Blip.Formatters;
-using Blip.Transforms;
+using Blip.Format;
+using Blip.Transform;
 
 namespace Blip;
 

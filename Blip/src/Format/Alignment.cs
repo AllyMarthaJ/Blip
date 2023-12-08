@@ -1,4 +1,4 @@
-namespace Blip.Formatters;
+namespace Blip.Format;
 
 public enum Alignment {
     LEFT = 0,
