@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Text;
 
 namespace Blip.Formatters;
@@ -13,21 +14,7 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
         return formattedLines[..maxLines].SelectMany(c => c).ToArray();
     }
 
-    private string spaceLine(StringBuilder sb, int width) {
-        int spaceRemaining = width - sb.Length;
-
-        return alignment switch {
-            Alignment.LEFT => sb + new string(' ', spaceRemaining),
-            Alignment.CENTER => new string(' ', spaceRemaining / 2) + sb +
-                                new string(' ', spaceRemaining - spaceRemaining / 2),
-            Alignment.RIGHT => new string(' ', spaceRemaining),
-            _ => throw new ArgumentOutOfRangeException(nameof(alignment), alignment, null)
-        };
-    }
-
     private string[] formatLine(string str, int width) {
-        if (str.Length <= width) return new[] { str };
-
         // TODO: Handle all whitespace.
         StringBuilder sb = new();
         var words = new Queue<string>(str.Split(" "));
@@ -40,8 +27,8 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
             // current line. Pop the line off, with padding.
             if (word.Length > width) {
                 if (sb.Length > 0) {
-                    lines.Add(this.spaceLine(sb, width));
-                    sb = new StringBuilder();
+                    lines.Add(sb.ToString().Justify(width, alignment));
+                    sb.Clear();
                 }
 
                 lines.Add(word[..(width - 3)] + "...");
@@ -55,8 +42,9 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
                 // Something's already in the builder, and so 
                 // we need enough room for at least one space, plus the word.
                 if (word.Length + sb.Length + 1 > width) {
-                    lines.Add(this.spaceLine(sb, width));
-                    sb = new StringBuilder(word);
+                    lines.Add(sb.ToString().Justify(width, alignment));
+                    sb.Clear();
+                    sb.Append(word);
                 }
                 else {
                     sb.Append(" " + word);
@@ -65,7 +53,7 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
         }
 
         // Finished adding all the words.
-        lines.Add(this.spaceLine(sb, width));
+        lines.Add(sb.ToString().Justify(width, alignment));
 
         return lines.ToArray();
     }

@@ -119,11 +119,36 @@ public class TruncationFormatterTests {
     }
 
     [Test]
+    [TestCaseSource(nameof(AlignmentInvariantSource))]
+    public void PreservesSomeEmptyLines(Alignment alignment)
+    {
+        var fmt = new TruncationFormatter(alignment);
+
+        char[] formatted = fmt.FormatString("panda\n\npanda", this.width, this.height);
+        string fmtString = String.Join("", formatted);
+        Assert.Multiple(() =>
+        {
+            Assert.That(formatted, Has.Length.EqualTo(this.height * this.width));
+            Assert.That(fmtString, Does.Contain("panda"));
+            Assert.That(formatted, Has.Exactly((this.height - 2) * this.width).EqualTo(' '));
+        });
+        
+        formatted = fmt.FormatString("panda\n\n\n", this.width, this.height);
+        fmtString = String.Join("", formatted);
+        Assert.Multiple(() =>
+        {
+            Assert.That(formatted, Has.Length.EqualTo(this.height * this.width));
+            Assert.That(fmtString, Does.Contain("panda"));
+            Assert.That(formatted, Has.Exactly((this.height - 1) * this.width).EqualTo(' '));
+        });
+    }
+
+    [Test]
     public void Blah() {
         var w = 30;
         var h = 5;
         var str =
-            "Ally is an amazing panda who loves to do maths and panda all day long. She really likes pandas and loves bunnies so much, you know?";
+            "Ally is\n\nmagic.";
         var opts = new UnionTransform(new UnionTransformOptions
             { Blank = new[] { ' ' }, PreserveTarget = PreservationMode.DESTINATION });
         StringMap background =
@@ -132,8 +157,8 @@ public class TruncationFormatterTests {
         StringMap sm =
             new StringMap(w + 2, h + 2)
                 .DrawRectangle('#', 0, 0, w + 2, h + 2)
-                .DrawString(str, new WordSplitFormatter(Alignment.CENTER), 1, 1, w, h);
-                // .DrawStringMap(background, opts, 0, 0, w + 2, h + 2);
+                .DrawString(str, new WordSplitFormatter(Alignment.JUSTIFY), 1, 1, w, h);
+        // .DrawStringMap(background, opts, 0, 0, w + 2, h + 2);
 
         Console.WriteLine(sm);
     }
