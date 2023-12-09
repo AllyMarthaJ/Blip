@@ -51,11 +51,14 @@ public class Tree(IDiagramComponent node, params IDiagramComponent[] children) :
         totalMap.DrawStringMap(parentMap, (width - parentMap.Width) / 2, 0);
 
         var left = (width - breadth) / 2;
+        // Preserve parent-child alignment in the event of a dispute,
+        // narrowly avoiding CPS and saving the day.
+        var stemOffset = 1 - left % 2;
         foreach (StringMap childMap in childrenMaps) {
             totalMap.DrawStringMap(childMap, left, childrenTop);
 
             // Child needs a stem.
-            totalMap.FillRectangle('|', left + (childMap.Width - 1) / 2, horizEdgeTop, 1, childrenTop - horizEdgeTop);
+            totalMap.FillRectangle('|', left + (childMap.Width - stemOffset) / 2, horizEdgeTop, 1, childrenTop - horizEdgeTop);
 
             left += childMap.Width + this.SiblingSpacing;
         }
