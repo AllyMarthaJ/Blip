@@ -12,9 +12,11 @@ public class BoxTests {
 
         StringMap sm = box.AsStringMap();
 
-        Assert.That(sm, Has.Property("Height").EqualTo(1));
-        Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
-        Assert.That(sm.ToString(), Does.Contain(msg));
+        Assert.Multiple(() => {
+            Assert.That(sm, Has.Property("Height").EqualTo(1));
+            Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
+            Assert.That(sm.ToString(), Does.Contain(msg)); 
+        });
     }
 
     [Test]
@@ -25,9 +27,11 @@ public class BoxTests {
 
         StringMap sm = box.AsStringMap();
 
-        Assert.That(sm, Has.Property("Height").EqualTo(3));
-        Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
-        Assert.That(sm.ToString(), Does.Contain(msg));
+        Assert.Multiple(() => {
+            Assert.That(sm, Has.Property("Height").EqualTo(3));
+            Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
+            Assert.That(sm.ToString(), Does.Contain(msg));
+        });
     }
 
     [Test]
@@ -43,10 +47,12 @@ public class BoxTests {
         StringMap sm = box.AsStringMap();
         var smt = sm.ToString();
 
-        Assert.That(sm, Has.Property("Height").EqualTo(5));
-        Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
-        Assert.That(smt, Does.Contain(title));
-        Assert.That(smt, Does.Contain(msg));
+        Assert.Multiple(() => {
+            Assert.That(sm, Has.Property("Height").EqualTo(5));
+            Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
+            Assert.That(smt, Does.Contain(title));
+            Assert.That(smt, Does.Contain(msg)); 
+        });
     }
 
     [Test]
@@ -62,9 +68,11 @@ public class BoxTests {
         StringMap sm = box.AsStringMap();
         var smt = sm.ToString();
 
-        Assert.That(sm, Has.Property("Height").EqualTo(3));
-        Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
-        Assert.That(smt, Does.Contain(title));
-        Assert.That(smt, Does.Contain(msg));
+        Assert.Multiple(() => {
+            Assert.That(sm, Has.Property("Height").EqualTo(3));
+            Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
+            Assert.That(smt, Does.Contain(title));
+            Assert.That(smt, Does.Contain(msg)); 
+        });
     }
 }
