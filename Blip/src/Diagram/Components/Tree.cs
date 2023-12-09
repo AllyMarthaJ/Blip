@@ -58,7 +58,8 @@ public class Tree(IDiagramComponent node, params IDiagramComponent[] children) :
             totalMap.DrawStringMap(childMap, left, childrenTop);
 
             // Child needs a stem.
-            totalMap.FillRectangle('|', left + (childMap.Width - stemOffset) / 2, horizEdgeTop, 1, childrenTop - horizEdgeTop);
+            totalMap.FillRectangle('|', left + (childMap.Width - stemOffset) / 2, horizEdgeTop, 1,
+                childrenTop - horizEdgeTop);
 
             left += childMap.Width + this.SiblingSpacing;
         }

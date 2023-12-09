@@ -4,7 +4,7 @@ using Blip.Format;
 namespace Blip.Tests.Diagram.Components;
 
 public class TreeTests {
-    private static object[] UnaryNodeSources = new[] {
+    private static object[] UnaryNodeSources = {
         new object[] { new[] { new Text(Alignment.LEFT, "pandas"), new Text(Alignment.LEFT, "aaa") } },
         new object[] { new[] { new Text(Alignment.LEFT, "pandas"), new Text(Alignment.LEFT, "aa") } },
         new object[] { new[] { new Text(Alignment.LEFT, "pandas"), new Text(Alignment.LEFT, "a") } },
@@ -13,44 +13,28 @@ public class TreeTests {
         new object[] { new[] { new Text(Alignment.LEFT, "panda"), new Text(Alignment.LEFT, "a") } },
         new object[] { new[] { new Text(Alignment.LEFT, "aaa"), new Text(Alignment.LEFT, "aaa") } },
         new object[] { new[] { new Text(Alignment.LEFT, "aaaa"), new Text(Alignment.LEFT, "aaaa") } },
+        // Technically not necessary: these tests test symmetry and 
+        // tuple alignment; trees are just supersets of subtrees and
+        // so on until you get to pairs...then pairs of pairs...
+        // and so on...
+        new object[] {
+            new[] {
+                new Text(Alignment.LEFT, "pandas"), new Text(Alignment.LEFT, "a"), new Text(Alignment.LEFT, "aaa"),
+                new Text(Alignment.LEFT, "panda"), new Text(Alignment.LEFT, "pandas")
+            }
+        },
     };
 
     [Test]
     public void Blah() {
-        var maxNodes = 40;
+        var maxNodes = 1000;
         var rnd = new Random();
         Console.WriteLine("----TREE----");
-        Console.WriteLine(this.randomTree(rnd, ref maxNodes, maxBranchingFactor: 4, maxDepth: 3).AsStringMap());
-        Console.WriteLine(
-            new Tree(
-                new Text(Alignment.LEFT, "pandas"),
-                new Text(Alignment.LEFT, "a")
-            ) { ParentSpacing = 3 }.AsStringMap()
-        );
-
-        Console.WriteLine(
-            new Tree(
-                new Text(Alignment.LEFT, "a"),
-                new Text(Alignment.LEFT, "pandas")
-            ) { ParentSpacing = 3 }.AsStringMap()
-        );
-
-        Console.WriteLine(
-            new Tree(
-                new Text(Alignment.LEFT, "panda"),
-                new Text(Alignment.LEFT, "aa")
-            ) { ParentSpacing = 3 }.AsStringMap()
-        );
-
-        Console.WriteLine(
-            new Tree(
-                new Text(Alignment.LEFT, "aa"),
-                new Text(Alignment.LEFT, "panda")
-            ) { ParentSpacing = 3 }.AsStringMap()
-        );
+        Console.WriteLine(this.generateRandomTree(rnd, ref maxNodes, maxBranchingFactor: 2, maxDepth: 10)
+            .AsStringMap());
     }
 
-    private Tree randomTree(
+    private Tree generateRandomTree(
         Random rnd,
         ref int maxNodes,
         int depth = 1,
@@ -58,8 +42,8 @@ public class TreeTests {
         int maxBranchingFactor = 3,
         int idx = 0
     ) {
-        var r = new[] { "mao", "peter", "bun", "qc", "ally", "panda", "mouse", "honman", "honmouse" };
-        var t = new Tree(new Text(Alignment.LEFT, r[rnd.Next(r.Length)])) { SiblingSpacing = 2, ParentSpacing = 1 };
+        var t = new Tree(new Text(Alignment.LEFT, $"Node ({depth - 1}, {idx})"))
+            { SiblingSpacing = 2, ParentSpacing = 1 };
         maxNodes -= 1;
 
         if (maxNodes <= 1 || depth == maxDepth) {
@@ -72,12 +56,12 @@ public class TreeTests {
         bool reverse = rnd.Next(2) == 0;
         if (reverse) {
             for (int i = children.Length - 1; i >= 0; i--) {
-                children[i] = this.randomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
+                children[i] = this.generateRandomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
             }
         }
         else {
             for (var i = 0; i < children.Length; i++) {
-                children[i] = this.randomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
+                children[i] = this.generateRandomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
             }
         }
 
@@ -85,17 +69,21 @@ public class TreeTests {
         return t;
     }
 
+    private Tree generateUnaryTree(IDiagramComponent[] nodes) {
+        return new Tree(
+            nodes.First(),
+            nodes.Length > 1
+                ? new IDiagramComponent[] { this.generateUnaryTree(nodes[1..]) }
+                : Array.Empty<IDiagramComponent>()
+        );
+    }
 
     [Test]
     [TestCaseSource(nameof(UnaryNodeSources))]
     public void UnaryTreeShouldNotContainDuplicateEdges(IDiagramComponent[] nodes) {
-        var trees = new Tree[] {
-            new Tree(
-                nodes.First(), nodes[1..]
-            ),
-            new Tree(
-                nodes.Reverse().First(), nodes.Reverse().ToArray()[1..]
-            )
+        Tree[] trees = {
+            generateUnaryTree(nodes),
+            generateUnaryTree(nodes.Reverse().ToArray())
         };
 
         Assert.Multiple(() => {
@@ -122,7 +110,7 @@ public class TreeTests {
                 }
 
                 // Cutoff checks
-                var width = nodes
+                int width = nodes
                     .Select((node) => node.AsStringMap().Width)
                     .Max();
                 Assert.That(sm.Width, Is.EqualTo(width));
