@@ -435,39 +435,37 @@ public class StringMapTests {
 
         [Test]
         public void Blah() {
-            // var title = "Ally is the gayest yeet yeet";
-            // var msg =
-            //     "Ally loves pandas and bunnies and all the things, so it comes as no surprise that she would love boxes.\nDid you know boxes are handy dandy maths things?";
-            // Console.WriteLine(new Box(msg, title).AsStringMap().ToString());
-            // var tree =
-            //     new Tree(
-            //         new Box("Node A") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-            //         new Tree(
-            //             new Box("Node B")
-            //                 { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-            //             new Box("Node E")
-            //                 { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-            //             new Tree(
-            //                 new Box("Node F")
-            //                     { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-            //                 new Box("Node G")
-            //                     { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-            //                 new Tree(
-            //                     new Box("Node H")
-            //                         { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-            //                     new Box("Node I")
-            //                         { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() }
-            //                 )
-            //             )
-            //         ),
-            //         new Box("Node C") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-            //         new Box("Node D") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() }
-            //     );
+            // var maxNodes = 40;
+            // var rnd = new Random();
+            // Console.WriteLine("----TREE----");
+            // Console.WriteLine(this.randomTree(rnd, ref maxNodes, maxBranchingFactor: 1, maxDepth: 5).AsStringMap());
+            Console.WriteLine(
+                new Tree(
+                    new Text(Alignment.LEFT, "pandas"),
+                    new Text(Alignment.LEFT, "a")
+                ) { ParentSpacing = 3 }.AsStringMap()
+            );
 
-            var maxNodes = 20;
-            var rnd = new Random();
-            Console.WriteLine("----TREE----");
-            Console.WriteLine(this.randomTree(rnd, ref maxNodes, maxBranchingFactor: 2, maxDepth: 3).AsStringMap());
+            Console.WriteLine(
+                new Tree(
+                    new Text(Alignment.LEFT, "a"),
+                    new Text(Alignment.LEFT, "pandas")
+                ) { ParentSpacing = 3 }.AsStringMap()
+            );
+
+            Console.WriteLine(
+                new Tree(
+                    new Text(Alignment.LEFT, "panda"),
+                    new Text(Alignment.LEFT, "aa")
+                ) { ParentSpacing = 3 }.AsStringMap()
+            );
+
+            Console.WriteLine(
+                new Tree(
+                    new Text(Alignment.LEFT, "aa"),
+                    new Text(Alignment.LEFT, "panda")
+                ) { ParentSpacing = 3 }.AsStringMap()
+            );
         }
 
         private Tree randomTree(
@@ -479,12 +477,10 @@ public class StringMapTests {
             int idx = 0
         ) {
             var r = new[] { "mao", "peter", "bun", "qc", "ally", "panda", "mouse", "honman", "honmouse" };
-            var t = new Tree(new Box(r[rnd.Next(r.Length)]) {
-                MaxWidth = 15, MessageAlignment = Alignment.CENTER, MessagePadding = new Padding()
-            });
+            var t = new Tree(new Text(Alignment.LEFT, r[rnd.Next(r.Length)])) { SiblingSpacing = 2, ParentSpacing = 1 };
             maxNodes -= 1;
 
-            if (maxNodes < 1 || depth == maxDepth) {
+            if (maxNodes <= 1 || depth == maxDepth) {
                 return t;
             }
 
