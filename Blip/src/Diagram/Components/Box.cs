@@ -4,18 +4,18 @@ using Blip.Format;
 
 namespace Blip.Diagram.Components;
 
-public class Box(string title, string message) : IDiagramComponent {
-    public int MaxWidth { get; set; }
-    public int MaxHeight { get; set; }
+public class Box(string? title, string message) : IDiagramComponent {
+    public int MaxWidth { get; set; } = 50;
+    public int MaxHeight { get; set; } = 30;
 
     public Padding TitlePadding { get; set; }
     public Padding MessagePadding { get; set; }
 
-    public string Title { get; set; } = title;
+    public string? Title { get; set; } = title;
     public string Message { get; set; } = message;
 
-    public Alignment TitleAlignment { get; set; } = Alignment.LEFT;
-    public Alignment MessageAlignment { get; set; } = Alignment.LEFT;
+    public Alignment TitleAlignment { get; set; } = Alignment.CENTER;
+    public Alignment MessageAlignment { get; set; } = Alignment.JUSTIFY;
 
     public int BorderWidth { get; set; } = 1;
     public int BorderHeight { get; set; } = 1;
@@ -36,6 +36,8 @@ public class Box(string title, string message) : IDiagramComponent {
         var titleFmt = new TruncationFormatter(this.TitleAlignment);
         var messageFmt = new WordSplitFormatter(this.MessageAlignment);
 
+        var hasTitle = this.Title is not null;
+        
         var borderWidth = this.BorderWidth;
         var borderHeight = this.BorderHeight;
 
@@ -49,7 +51,7 @@ public class Box(string title, string message) : IDiagramComponent {
         var titleWidth = width - titleLeft - titleRight;
 
         var separatorLeft = borderWidth;
-        var separatorTop = titleTop + this.TitlePadding.Bottom + 1;
+        var separatorTop = hasTitle ? titleTop + this.TitlePadding.Bottom + 1 : 0;
         var separatorWidth = width - 2 * borderWidth;
 
         var messageLeft = this.MessagePadding.Left + borderWidth;
@@ -62,12 +64,16 @@ public class Box(string title, string message) : IDiagramComponent {
         var clampMessageHeight = Math.Min(maxMessageHeight, actualMessageHeight);
 
         height = messageTop + clampMessageHeight + this.MessagePadding.Bottom + borderHeight;
-
-        return new StringMap(width, height)
+        
+        StringMap sm = new StringMap(width, height)
             .FillRectangle('#', 0, 0, width, height)
-            .FillRectangle(' ', borderWidth, borderHeight, width - 2 * borderWidth, height - 2 * borderHeight)
-            .DrawString(this.Title, titleFmt, titleLeft, titleTop, titleWidth, 1)
-            .FillRectangle('-', separatorLeft, separatorTop, separatorWidth, 1)
+            .FillRectangle(' ', borderWidth, borderHeight, width - 2 * borderWidth, height - 2 * borderHeight);
+        if (hasTitle) {
+            sm
+                .DrawString(this.Title!, titleFmt, titleLeft, titleTop, titleWidth, 1)
+                .FillRectangle('-', separatorLeft, separatorTop, separatorWidth, 1);
+        }
+        return sm
             .DrawString(this.Message, messageFmt, messageLeft, messageTop, messageWidth, clampMessageHeight);
     }
 }

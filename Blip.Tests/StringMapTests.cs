@@ -441,12 +441,12 @@ public class StringMapTests {
             Console.WriteLine(
                 new Box(title,
                     msg) {
-                    MaxWidth = 30, MaxHeight = 50,
-                    TitlePadding = new Padding() { Top = 1, Left = 1, Right = 1, Bottom = 1 },
-                    MessagePadding = new Padding() { Top = 1, Left = 3, Right = 3, Bottom = 1 },
+                    MaxWidth = 40, MaxHeight = 50,
+                    TitlePadding = new Padding() { Left = 1, Right = 1, },
+                    MessagePadding = new Padding() { Top = 1, Bottom = 1, Left = 3, Right = 3 },
                     TitleAlignment = Alignment.CENTER,
                     MessageAlignment = Alignment.JUSTIFY,
-                    BorderWidth =1,
+                    BorderWidth = 1,
                     BorderHeight = 1,
                 }.AsStringMap().ToString());
         }
