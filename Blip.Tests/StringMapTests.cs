@@ -439,26 +439,72 @@ public class StringMapTests {
             // var msg =
             //     "Ally loves pandas and bunnies and all the things, so it comes as no surprise that she would love boxes.\nDid you know boxes are handy dandy maths things?";
             // Console.WriteLine(new Box(msg, title).AsStringMap().ToString());
-            var tree =
-                new Tree(
-                    new Box("Node A") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-                    new Tree(
-                        new Box("Node B") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-                        new Box("Node E") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-                        new Tree(
-                            new Box("Node F") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-                            new Box("Node G") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-                            new Tree(
-                                new Box("Node H") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-                                new Box("Node I") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() }
-                            ) 
-                        )
-                    ) ,
-                    new Box("Node C") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
-                    new Box("Node D") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() }
-                );
+            // var tree =
+            //     new Tree(
+            //         new Box("Node A") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+            //         new Tree(
+            //             new Box("Node B")
+            //                 { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+            //             new Box("Node E")
+            //                 { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+            //             new Tree(
+            //                 new Box("Node F")
+            //                     { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+            //                 new Box("Node G")
+            //                     { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+            //                 new Tree(
+            //                     new Box("Node H")
+            //                         { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+            //                     new Box("Node I")
+            //                         { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() }
+            //                 )
+            //             )
+            //         ),
+            //         new Box("Node C") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+            //         new Box("Node D") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() }
+            //     );
 
-            Console.WriteLine(tree.AsStringMap());
+            var maxNodes = 20;
+            var rnd = new Random();
+            Console.WriteLine("----TREE----");
+            Console.WriteLine(this.randomTree(rnd, ref maxNodes, maxBranchingFactor: 2, maxDepth: 3).AsStringMap());
+        }
+
+        Tree randomTree(
+            Random rnd,
+            ref int maxNodes,
+            int depth = 1,
+            int maxDepth = 3,
+            int maxBranchingFactor = 3,
+            int idx = 0
+        ) {
+            var r = new[] { "mao", "peter", "bun", "qc", "ally", "panda", "mouse", "honman", "honmouse" }; 
+            Tree t = new Tree(new Box(r[rnd.Next(r.Length)]) {
+                MaxWidth = 15, MessageAlignment = Alignment.CENTER, MessagePadding = new(), 
+            });
+            maxNodes -= 1;
+
+            if (maxNodes < 1 || depth == maxDepth) {
+                return t;
+            }
+
+            // How many children should this tree have?
+            var children = new Tree[Math.Min(rnd.Next(maxNodes), maxBranchingFactor)];
+
+            var reverse = rnd.Next(2) == 0;
+            if (reverse) {
+                for (int i = children.Length - 1; i >= 0; i--) {
+                    children[i] = randomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
+                }
+            }
+            else {
+                for (int i = 0; i < children.Length; i++) {
+                    children[i] = randomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
+                }
+            }
+
+            t.Children = children;
+            return t;
         }
     }
 }

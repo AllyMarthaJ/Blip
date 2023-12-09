@@ -10,7 +10,7 @@ public class Tree(Box node, params IDiagramComponent[] children) : IDiagramCompo
     public int ParentSpacing { get; set; } = 3;
 
     public Box Node { get; set; } = node;
-    public IEnumerable<IDiagramComponent> Children { get; } = children;
+    public IEnumerable<IDiagramComponent> Children { get; set; } = children;
 
     public StringMap AsStringMap() {
         foreach (IDiagramComponent diagramComponent in this.Children) {
