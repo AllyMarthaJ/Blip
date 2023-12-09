@@ -27,7 +27,7 @@ public class Tree(IDiagramComponent node, params IDiagramComponent[] children) :
                 .Aggregate(0, (total, child) => total + child.Width + this.SiblingSpacing)
             - this.SiblingSpacing;
         var width = Math.Max(breadth, parentMap.Width);
-        
+
         int maxHeight = childrenMaps.MaxBy(child => child.Height)!.Height;
         int childrenTop = parentMap.Height + this.ParentSpacing;
 
@@ -45,7 +45,7 @@ public class Tree(IDiagramComponent node, params IDiagramComponent[] children) :
         }
 
         // Parent needs a stem.
-        totalMap.FillRectangle('|', width / 2, parentMap.Height, 1, horizEdgeTop - parentMap.Height + 1);
+        totalMap.FillRectangle('|', (width - 1) / 2, parentMap.Height, 1, horizEdgeTop - parentMap.Height + 1);
 
         // McGlue those children and parent together.
         totalMap.DrawStringMap(parentMap, (width - parentMap.Width) / 2, 0);
@@ -55,7 +55,7 @@ public class Tree(IDiagramComponent node, params IDiagramComponent[] children) :
             totalMap.DrawStringMap(childMap, left, childrenTop);
 
             // Child needs a stem.
-            totalMap.FillRectangle('|', left + childMap.Width / 2, horizEdgeTop, 1, childrenTop - horizEdgeTop);
+            totalMap.FillRectangle('|', left + (childMap.Width - 1) / 2, horizEdgeTop, 1, childrenTop - horizEdgeTop);
 
             left += childMap.Width + this.SiblingSpacing;
         }
