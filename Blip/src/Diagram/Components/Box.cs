@@ -4,12 +4,12 @@ using Blip.Format;
 
 namespace Blip.Diagram.Components;
 
-public class Box(string? title, string message) : IDiagramComponent {
-    public int MaxWidth { get; set; } = 50;
+public class Box(string message, string? title = null) : IDiagramComponent {
+    public int MaxWidth { get; set; } = 40;
     public int MaxHeight { get; set; } = 30;
 
-    public Padding TitlePadding { get; set; }
-    public Padding MessagePadding { get; set; }
+    public Padding TitlePadding { get; set; } = new() { Left = 1, Right = 1, };
+    public Padding MessagePadding { get; set; } = new() { Top = 1, Bottom = 1, Left = 3, Right = 3 };
 
     public string? Title { get; set; } = title;
     public string Message { get; set; } = message;

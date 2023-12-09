@@ -435,20 +435,30 @@ public class StringMapTests {
 
         [Test]
         public void Blah() {
-            var title = "Ally is the gayest yeet yeet";
-            var msg =
-                "Ally loves pandas and bunnies and all the things, so it comes as no surprise that she would love boxes.\nDid you know boxes are handy dandy maths things?";
-            Console.WriteLine(
-                new Box(title,
-                    msg) {
-                    MaxWidth = 40, MaxHeight = 50,
-                    TitlePadding = new Padding() { Left = 1, Right = 1, },
-                    MessagePadding = new Padding() { Top = 1, Bottom = 1, Left = 3, Right = 3 },
-                    TitleAlignment = Alignment.CENTER,
-                    MessageAlignment = Alignment.JUSTIFY,
-                    BorderWidth = 1,
-                    BorderHeight = 1,
-                }.AsStringMap().ToString());
+            // var title = "Ally is the gayest yeet yeet";
+            // var msg =
+            //     "Ally loves pandas and bunnies and all the things, so it comes as no surprise that she would love boxes.\nDid you know boxes are handy dandy maths things?";
+            // Console.WriteLine(new Box(msg, title).AsStringMap().ToString());
+            var tree =
+                new Tree(
+                    new Box("Node A") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+                    new Tree(
+                        new Box("Node B") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+                        new Box("Node E") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+                        new Tree(
+                            new Box("Node F") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+                            new Box("Node G") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+                            new Tree(
+                                new Box("Node H") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+                                new Box("Node I") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() }
+                            ) 
+                        )
+                    ) ,
+                    new Box("Node C") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() },
+                    new Box("Node D") { MaxWidth = 12, MessageAlignment = Alignment.CENTER, MessagePadding = new() }
+                );
+
+            Console.WriteLine(tree.AsStringMap());
         }
     }
 }
