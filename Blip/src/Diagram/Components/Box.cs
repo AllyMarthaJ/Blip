@@ -37,7 +37,7 @@ public class Box(string message, string? title = null) : IDiagramComponent {
         var messageFmt = new WordSplitFormatter(this.MessageAlignment);
 
         var hasTitle = this.Title is not null;
-        
+
         var borderWidth = this.BorderWidth;
         var borderHeight = this.BorderHeight;
 
@@ -55,7 +55,11 @@ public class Box(string message, string? title = null) : IDiagramComponent {
         var separatorWidth = width - 2 * borderWidth;
 
         var messageLeft = this.MessagePadding.Left + borderWidth;
-        var messageTop = separatorTop + this.MessagePadding.Top + 1;
+        var messageTop =
+            // If we have a title, take directly from the separator since we 
+            // already computed the relevant position.
+            // Otherwise take directly from the border; the message is the topmost thing.
+            this.MessagePadding.Top + (hasTitle ? separatorTop + 1 : this.BorderHeight);
         var messageWidth = width - messageLeft - this.MessagePadding.Right - borderWidth;
 
         var actualMessageHeight = messageFmt.MeasureHeight(message, messageWidth);
@@ -64,7 +68,7 @@ public class Box(string message, string? title = null) : IDiagramComponent {
         var clampMessageHeight = Math.Min(maxMessageHeight, actualMessageHeight);
 
         height = messageTop + clampMessageHeight + this.MessagePadding.Bottom + borderHeight;
-        
+
         StringMap sm = new StringMap(width, height)
             .FillRectangle('#', 0, 0, width, height)
             .FillRectangle(' ', borderWidth, borderHeight, width - 2 * borderWidth, height - 2 * borderHeight);
@@ -73,6 +77,7 @@ public class Box(string message, string? title = null) : IDiagramComponent {
                 .DrawString(this.Title!, titleFmt, titleLeft, titleTop, titleWidth, 1)
                 .FillRectangle('-', separatorLeft, separatorTop, separatorWidth, 1);
         }
+
         return sm
             .DrawString(this.Message, messageFmt, messageLeft, messageTop, messageWidth, clampMessageHeight);
     }
