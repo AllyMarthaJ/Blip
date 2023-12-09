@@ -5,7 +5,7 @@ namespace Blip.Tests.Formatters;
 [TestFixture]
 [TestFixtureSource(nameof(StringExtensionTestsSource))]
 public class StringExtensionTests(string subStr) {
-    private static object[] StringExtensionTestsSource = new object[] {
+    private static object[] StringExtensionTestsSource = {
         new object[] { "short" },
         new object[] { "lorem ipsum dolor sit amet" },
         new object[] { "pandas pandas" },
@@ -13,11 +13,11 @@ public class StringExtensionTests(string subStr) {
         new object[] { " " }
     };
 
-    private static object[] AlignmentInvariantTestsSource = new object[] {
+    private static object[] AlignmentInvariantTestsSource = {
         new object[] { Alignment.LEFT },
         new object[] { Alignment.RIGHT },
         new object[] { Alignment.CENTER },
-        new object[] { Alignment.JUSTIFY },
+        new object[] { Alignment.JUSTIFY }
     };
 
     [Test]
@@ -55,7 +55,7 @@ public class StringExtensionTests(string subStr) {
 
         string[] words = subStr.Split(" ");
         int totalWordLength = words
-            .Select((w) => w.Length)
+            .Select(w => w.Length)
             .Aggregate(0, (tot, cur) => tot + cur);
 
         Assert.That(justified.ToCharArray(),
@@ -77,7 +77,7 @@ public class StringExtensionTests(string subStr) {
         Assert.That(subStr.Justify(len, alignment), Is.EqualTo(subStr));
     }
 
-    
+
     [Test]
     [TestCaseSource(nameof(AlignmentInvariantTestsSource))]
     public void AlignWithEqualSpaceDoesNothing(Alignment alignment) {

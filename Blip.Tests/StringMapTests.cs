@@ -470,7 +470,7 @@ public class StringMapTests {
             Console.WriteLine(this.randomTree(rnd, ref maxNodes, maxBranchingFactor: 2, maxDepth: 3).AsStringMap());
         }
 
-        Tree randomTree(
+        private Tree randomTree(
             Random rnd,
             ref int maxNodes,
             int depth = 1,
@@ -478,9 +478,9 @@ public class StringMapTests {
             int maxBranchingFactor = 3,
             int idx = 0
         ) {
-            var r = new[] { "mao", "peter", "bun", "qc", "ally", "panda", "mouse", "honman", "honmouse" }; 
-            Tree t = new Tree(new Box(r[rnd.Next(r.Length)]) {
-                MaxWidth = 15, MessageAlignment = Alignment.CENTER, MessagePadding = new(), 
+            var r = new[] { "mao", "peter", "bun", "qc", "ally", "panda", "mouse", "honman", "honmouse" };
+            var t = new Tree(new Box(r[rnd.Next(r.Length)]) {
+                MaxWidth = 15, MessageAlignment = Alignment.CENTER, MessagePadding = new Padding()
             });
             maxNodes -= 1;
 
@@ -489,17 +489,17 @@ public class StringMapTests {
             }
 
             // How many children should this tree have?
-            var children = new Tree[Math.Min(rnd.Next(maxNodes), maxBranchingFactor)];
+            Tree[] children = new Tree[Math.Min(rnd.Next(maxNodes), maxBranchingFactor)];
 
-            var reverse = rnd.Next(2) == 0;
+            bool reverse = rnd.Next(2) == 0;
             if (reverse) {
                 for (int i = children.Length - 1; i >= 0; i--) {
-                    children[i] = randomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
+                    children[i] = this.randomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
                 }
             }
             else {
-                for (int i = 0; i < children.Length; i++) {
-                    children[i] = randomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
+                for (var i = 0; i < children.Length; i++) {
+                    children[i] = this.randomTree(rnd, ref maxNodes, depth + 1, maxDepth, maxBranchingFactor, i);
                 }
             }
 

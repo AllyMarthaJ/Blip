@@ -1,4 +1,4 @@
-namespace Blip.Diagram.Styles; 
+namespace Blip.Diagram.Styles;
 
 public struct Padding {
     public int Left { get; set; }

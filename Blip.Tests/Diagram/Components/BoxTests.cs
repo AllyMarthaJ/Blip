@@ -1,4 +1,5 @@
 using Blip.Diagram.Components;
+using Blip.Diagram.Styles;
 
 namespace Blip.Tests.Diagram.Components;
 
@@ -6,9 +7,10 @@ public class BoxTests {
     [Test]
     public void NoTitleNoBorderDoesNotOverflow() {
         var msg = "message";
-        var box = new Box(msg) { BorderHeight = 0, BorderWidth = 0, MaxWidth = msg.Length * 2, MessagePadding = new() };
+        var box = new Box(msg)
+            { BorderHeight = 0, BorderWidth = 0, MaxWidth = msg.Length * 2, MessagePadding = new Padding() };
 
-        var sm = box.AsStringMap();
+        StringMap sm = box.AsStringMap();
 
         Assert.That(sm, Has.Property("Height").EqualTo(1));
         Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
@@ -18,9 +20,10 @@ public class BoxTests {
     [Test]
     public void NoTitleWithBorderDoesNotOverflow() {
         var msg = "message";
-        var box = new Box(msg) { BorderHeight = 1, BorderWidth = 1, MaxWidth = msg.Length * 2, MessagePadding = new() };
+        var box = new Box(msg)
+            { BorderHeight = 1, BorderWidth = 1, MaxWidth = msg.Length * 2, MessagePadding = new Padding() };
 
-        var sm = box.AsStringMap();
+        StringMap sm = box.AsStringMap();
 
         Assert.That(sm, Has.Property("Height").EqualTo(3));
         Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
@@ -33,10 +36,11 @@ public class BoxTests {
         var msg = "message";
 
         var box = new Box(msg, title) {
-            BorderHeight = 1, BorderWidth = 1, MaxWidth = msg.Length * 2, TitlePadding = new(), MessagePadding = new()
+            BorderHeight = 1, BorderWidth = 1, MaxWidth = msg.Length * 2, TitlePadding = new Padding(),
+            MessagePadding = new Padding()
         };
 
-        var sm = box.AsStringMap();
+        StringMap sm = box.AsStringMap();
         var smt = sm.ToString();
 
         Assert.That(sm, Has.Property("Height").EqualTo(5));
@@ -44,17 +48,18 @@ public class BoxTests {
         Assert.That(smt, Does.Contain(title));
         Assert.That(smt, Does.Contain(msg));
     }
-    
+
     [Test]
     public void TitleAndMessageWithoutBorderDoesNotOverflow() {
         var title = "title";
         var msg = "message";
 
         var box = new Box(msg, title) {
-            BorderHeight = 0, BorderWidth = 0, MaxWidth = msg.Length * 2, TitlePadding = new(), MessagePadding = new()
+            BorderHeight = 0, BorderWidth = 0, MaxWidth = msg.Length * 2, TitlePadding = new Padding(),
+            MessagePadding = new Padding()
         };
 
-        var sm = box.AsStringMap();
+        StringMap sm = box.AsStringMap();
         var smt = sm.ToString();
 
         Assert.That(sm, Has.Property("Height").EqualTo(3));

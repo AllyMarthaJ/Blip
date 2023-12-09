@@ -1,15 +1,12 @@
-using Blip.Transform;
-
 namespace Blip.Diagram.Components;
 
 public class Tree(Box node, params IDiagramComponent[] children) : IDiagramComponent {
-    public int MaxWidth { get; set; }
-    public int MaxHeight { get; set; }
-
     public int SiblingSpacing { get; set; } = 3;
     public int ParentSpacing { get; set; } = 3;
 
     public Box Node { get; set; } = node;
+    public int MaxWidth { get; set; }
+    public int MaxHeight { get; set; }
     public IEnumerable<IDiagramComponent> Children { get; set; } = children;
 
     public StringMap AsStringMap() {
@@ -25,28 +22,28 @@ public class Tree(Box node, params IDiagramComponent[] children) : IDiagramCompo
         }
 
         // Recursive step: render all children, with the top box.
-        var childrenMaps =
+        StringMap[] childrenMaps =
             this.Children
-                .Select((child) => child.AsStringMap())
+                .Select(child => child.AsStringMap())
                 .ToArray();
-        var parentMap = this.Node.AsStringMap();
+        StringMap parentMap = this.Node.AsStringMap();
 
-        var breadth =
+        int breadth =
             childrenMaps
                 .Aggregate(0, (total, child) => total + child.Width + this.SiblingSpacing)
             - this.SiblingSpacing;
-        var maxHeight = childrenMaps.MaxBy((child) => child.Height)!.Height;
-        var childrenTop = parentMap.Height + this.ParentSpacing;
+        int maxHeight = childrenMaps.MaxBy(child => child.Height)!.Height;
+        int childrenTop = parentMap.Height + this.ParentSpacing;
 
         var totalMap = new StringMap(breadth, childrenTop + maxHeight);
 
         // Draw horizontal edges.
-        var drawHorizEdge = childrenMaps.Length > 1;
-        var horizEdgeTop = parentMap.Height + this.ParentSpacing / 2;
+        bool drawHorizEdge = childrenMaps.Length > 1;
+        int horizEdgeTop = parentMap.Height + this.ParentSpacing / 2;
 
         if (drawHorizEdge) {
-            var horizEdgeLeft = childrenMaps.First().Width / 2;
-            var horizEdgeRight = breadth - childrenMaps.Last().Width / 2;
+            int horizEdgeLeft = childrenMaps.First().Width / 2;
+            int horizEdgeRight = breadth - childrenMaps.Last().Width / 2;
 
             totalMap.FillRectangle('-', horizEdgeLeft, horizEdgeTop, horizEdgeRight - horizEdgeLeft, 1);
         }

@@ -3,11 +3,6 @@ using System.Text;
 namespace Blip.Format;
 
 public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
-    private IEnumerable<string> getFormattedLines(string str, int width) {
-        string[] lines = SharedHelpers.SPLIT_LINE_REGEX.Split(str);
-        return lines.SelectMany(line => this.formatLine(line, width));
-    }
-    
     public char[] FormatString(string str, int width, int height) {
         string[] formattedLines = this.getFormattedLines(str, width).ToArray();
 
@@ -19,6 +14,11 @@ public class WordSplitFormatter(Alignment alignment) : IStringFormatter {
 
     public int MeasureHeight(string str, int width) {
         return this.getFormattedLines(str, width).Count();
+    }
+
+    private IEnumerable<string> getFormattedLines(string str, int width) {
+        string[] lines = SharedHelpers.SPLIT_LINE_REGEX.Split(str);
+        return lines.SelectMany(line => this.formatLine(line, width));
     }
 
     private string[] formatLine(string str, int width) {
