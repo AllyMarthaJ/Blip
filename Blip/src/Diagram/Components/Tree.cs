@@ -26,7 +26,7 @@ public class Tree(IDiagramComponent node, params IDiagramComponent[] children) :
             childrenMaps
                 .Aggregate(0, (total, child) => total + child.Width + this.SiblingSpacing)
             - this.SiblingSpacing;
-        var width = Math.Max(breadth, parentMap.Width);
+        int width = Math.Max(breadth, parentMap.Width);
 
         int maxHeight = childrenMaps.MaxBy(child => child.Height)!.Height;
         int childrenTop = parentMap.Height + this.ParentSpacing;
@@ -50,10 +50,10 @@ public class Tree(IDiagramComponent node, params IDiagramComponent[] children) :
         // McGlue those children and parent together.
         totalMap.DrawStringMap(parentMap, (width - parentMap.Width) / 2, 0);
 
-        var left = (width - breadth) / 2;
+        int left = (width - breadth) / 2;
         // Preserve parent-child alignment in the event of a dispute,
         // narrowly avoiding CPS and saving the day.
-        var stemOffset = 1 - left % 2;
+        int stemOffset = 1 - left % 2;
         foreach (StringMap childMap in childrenMaps) {
             totalMap.DrawStringMap(childMap, left, childrenTop);
 

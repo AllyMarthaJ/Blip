@@ -22,17 +22,17 @@ public class TreeTests {
                 new Text(Alignment.LEFT, "pandas"), new Text(Alignment.LEFT, "a"), new Text(Alignment.LEFT, "aaa"),
                 new Text(Alignment.LEFT, "panda"), new Text(Alignment.LEFT, "pandas")
             }
-        },
+        }
     };
 
     [Test]
     public void Blah() {
         var rnd = new Random();
-        for (int i = 0; i <10; i++) {
+        for (var i = 0; i < 10; i++) {
             Console.WriteLine("----TREE----");
             var maxNodes = 10;
             Console.WriteLine(this.generateRandomTree(rnd, ref maxNodes, maxBranchingFactor: 2, maxDepth: 3)
-                .AsStringMap());   
+                .AsStringMap());
         }
     }
 
@@ -84,21 +84,20 @@ public class TreeTests {
     [TestCaseSource(nameof(UnaryNodeSources))]
     public void UnaryTreeShouldNotContainDuplicateEdges(IDiagramComponent[] nodes) {
         Tree[] trees = {
-            generateUnaryTree(nodes),
-            generateUnaryTree(nodes.Reverse().ToArray())
+            this.generateUnaryTree(nodes), this.generateUnaryTree(nodes.Reverse().ToArray())
         };
 
         Assert.Multiple(() => {
             foreach (Tree tree in trees) {
-                var sm = tree.AsStringMap();
+                StringMap sm = tree.AsStringMap();
                 var smt = sm.ToString();
 
                 // Unary node misalignment checks
                 Assert.That(smt, Does.Not.Contain("||"));
                 Assert.That(smt, Does.Not.Contain("| |"));
 
-                for (int y = 0; y < sm.Height; y++) {
-                    for (int x = 0; x < sm.Width; x++) {
+                for (var y = 0; y < sm.Height; y++) {
+                    for (var x = 0; x < sm.Width; x++) {
                         if (sm.GetChar(x, y) == '|') {
                             if (y > 0) {
                                 Assert.That(sm.GetChar(x, y - 1), Is.Not.EqualTo(' '));
@@ -113,7 +112,7 @@ public class TreeTests {
 
                 // Cutoff checks
                 int width = nodes
-                    .Select((node) => node.AsStringMap().Width)
+                    .Select(node => node.AsStringMap().Width)
                     .Max();
                 Assert.That(sm.Width, Is.EqualTo(width));
             }

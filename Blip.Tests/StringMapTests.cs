@@ -1,6 +1,3 @@
-using Blip.Diagram.Components;
-using Blip.Diagram.Styles;
-using Blip.Format;
 using Blip.Transform;
 
 namespace Blip.Tests;

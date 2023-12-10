@@ -15,7 +15,7 @@ public class BoxTests {
         Assert.Multiple(() => {
             Assert.That(sm, Has.Property("Height").EqualTo(1));
             Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
-            Assert.That(sm.ToString(), Does.Contain(msg)); 
+            Assert.That(sm.ToString(), Does.Contain(msg));
         });
     }
 
@@ -51,7 +51,7 @@ public class BoxTests {
             Assert.That(sm, Has.Property("Height").EqualTo(5));
             Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
             Assert.That(smt, Does.Contain(title));
-            Assert.That(smt, Does.Contain(msg)); 
+            Assert.That(smt, Does.Contain(msg));
         });
     }
 
@@ -72,7 +72,7 @@ public class BoxTests {
             Assert.That(sm, Has.Property("Height").EqualTo(3));
             Assert.That(sm, Has.Property("Width").EqualTo(msg.Length * 2));
             Assert.That(smt, Does.Contain(title));
-            Assert.That(smt, Does.Contain(msg)); 
+            Assert.That(smt, Does.Contain(msg));
         });
     }
 }
