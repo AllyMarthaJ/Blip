@@ -1,4 +1,4 @@
-namespace Blip.Transforms;
+namespace Blip.Transform;
 
 /// <summary>
 ///     As the idea of a union only really works over boolean logic,

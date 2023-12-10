@@ -1,4 +1,4 @@
-using Blip.Formatters;
+using Blip.Format;
 
 namespace Blip.Tests.Formatters;
 
