@@ -1,12 +1,10 @@
-using Blip.Transform;
-
 namespace Blip.Diagram.Components;
 
 /// <summary>
-/// Encapsulate a StringMap directly as a component.
-/// Does not allow modification of the underlying StringMap directly.
-/// Will crop the StringMap if the MaxWidth/MaxHeight are smaller
-/// than the map itself.
+///     Encapsulate a StringMap directly as a component.
+///     Does not allow modification of the underlying StringMap directly.
+///     Will crop the StringMap if the MaxWidth/MaxHeight are smaller
+///     than the map itself.
 /// </summary>
 /// <param name="sm">The StringMap to encapsulate</param>
 public class Raw(StringMap sm) : IDiagramComponent {
@@ -23,8 +21,8 @@ public class Raw(StringMap sm) : IDiagramComponent {
             return sm;
         }
 
-        var width = this.MaxWidth == 0 ? sm.Width : this.MaxWidth;
-        var height = this.MaxHeight == 0 ? sm.Height : this.MaxHeight;
+        int width = this.MaxWidth == 0 ? sm.Width : this.MaxWidth;
+        int height = this.MaxHeight == 0 ? sm.Height : this.MaxHeight;
 
         return new StringMap(width, height)
             .DrawStringMap(sm, 0, 0);

@@ -3,11 +3,10 @@ using Blip.Format;
 namespace Blip.Diagram.Components;
 
 public class Frame : IDiagramComponent {
-    public int MaxWidth { get; set; }
-    public int MaxHeight { get; set; }
-
     public Alignment HorizontalAlignment { get; set; } = Alignment.CENTER;
     public Alignment VerticalAlignment { get; set; } = Alignment.CENTER;
+    public int MaxWidth { get; set; }
+    public int MaxHeight { get; set; }
 
     public IEnumerable<IDiagramComponent> Children { get; set; }
 
