@@ -27,11 +27,13 @@ public class TreeTests {
 
     [Test]
     public void Blah() {
-        var maxNodes = 1000;
         var rnd = new Random();
-        Console.WriteLine("----TREE----");
-        Console.WriteLine(this.generateRandomTree(rnd, ref maxNodes, maxBranchingFactor: 2, maxDepth: 10)
-            .AsStringMap());
+        for (int i = 0; i <10; i++) {
+            Console.WriteLine("----TREE----");
+            var maxNodes = 10;
+            Console.WriteLine(this.generateRandomTree(rnd, ref maxNodes, maxBranchingFactor: 2, maxDepth: 3)
+                .AsStringMap());   
+        }
     }
 
     private Tree generateRandomTree(
