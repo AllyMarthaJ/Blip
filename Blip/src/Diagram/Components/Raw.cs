@@ -27,6 +27,6 @@ public class Raw(StringMap sm) : IDiagramComponent {
         var height = this.MaxHeight == 0 ? sm.Height : this.MaxHeight;
 
         return new StringMap(width, height)
-            .DrawStringMap(sm, new OriginOnlyTransform(), 0, 0, width, height);
+            .DrawStringMap(sm, 0, 0);
     }
 }
