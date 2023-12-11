@@ -129,4 +129,31 @@ public class FlowTests {
             pAxis--;
         }
     }
+    
+    [Test]
+    [TestCaseSource(nameof(InvariantTestsSource))]
+    public void LimitedPrimaryAxisLimitedSecondaryAxisTruncates(Direction dir, Alignment flowAlignment) {
+        Text[] children = Enumerable.Repeat(new Text(Alignment.LEFT, "a"), 10).ToArray();
+
+        var flow = new Flow { Children = children, FlowDirection = dir, FlowAlignment = flowAlignment };
+
+        int maxAxis = children.Length + (children.Length - 1) * flow.ChildGap - 2;
+
+        switch (dir) {
+            case Direction.HORIZONTAL:
+                flow.MaxWidth = maxAxis;
+                flow.MaxHeight = 1;
+                break;
+            case Direction.VERTICAL:
+                flow.MaxHeight = maxAxis;
+                flow.MaxWidth = 1;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
+        }
+
+        var sm = flow.AsStringMap();
+
+        Assert.That(sm.ToString(), Has.Exactly(9).EqualTo('a'));
+    }
 }
