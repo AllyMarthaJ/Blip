@@ -11,9 +11,9 @@ public static partial class SharedHelpers {
     public static int[] GetJustifySpaces(int totalWidth, int contentWidth, int contentCount) {
         int totalSpaces = contentCount - 1;
         int spaceRemaining = totalWidth - contentWidth;
-        
+
         var usedSpace = 0;
-        
+
         int[] spaces = Enumerable.Repeat(0, totalSpaces).ToArray();
         int curIdx = totalSpaces - 1;
         while (usedSpace < spaceRemaining) {

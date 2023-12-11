@@ -3,9 +3,9 @@ using Blip.Diagram.Components;
 namespace Blip.Tests.Diagram.Components;
 
 public class RawTests {
-    private StringMap sm;
     private readonly int smHeight = 5;
     private readonly int smWidth = 5;
+    private StringMap sm;
 
     [SetUp]
     public void Setup() {

@@ -34,7 +34,7 @@ public static class StringExtensions {
         if (words.Length > 1) {
             int[] spaces = SharedHelpers.GetJustifySpaces(
                 len,
-                words.Sum((w) => w.Length),
+                words.Sum(w => w.Length),
                 words.Length
             );
 
