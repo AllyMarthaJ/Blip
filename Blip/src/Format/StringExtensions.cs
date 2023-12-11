@@ -30,27 +30,15 @@ public static class StringExtensions {
             return sb;
         }
 
-        int totalSpaces = words.Length - 1;
-        int spaceRemaining = len - words
-            .Select(w => w.Length)
-            .Aggregate(0, (tot, cur) => tot + cur);
-        var usedSpace = 0;
-
         sb.Clear();
-        if (totalSpaces > 0) {
-            int[] spaces = Enumerable.Repeat(0, totalSpaces).ToArray();
-            int curIdx = totalSpaces - 1;
-            while (usedSpace < spaceRemaining) {
-                spaces[curIdx] += 1;
+        if (words.Length > 1) {
+            int[] spaces = SharedHelpers.GetJustifySpaces(
+                len,
+                words.Sum((w) => w.Length),
+                words.Length
+            );
 
-                usedSpace += 1;
-                curIdx -= 1;
-                if (curIdx < 0) {
-                    curIdx = totalSpaces - 1;
-                }
-            }
-
-            for (var i = 0; i < totalSpaces; i++) {
+            for (var i = 0; i < words.Length - 1; i++) {
                 sb.Append(words[i] + new string(padWith, spaces[i]));
             }
         }
