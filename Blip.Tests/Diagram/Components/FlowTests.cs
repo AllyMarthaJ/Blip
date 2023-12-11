@@ -152,7 +152,7 @@ public class FlowTests {
                 throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
         }
 
-        var sm = flow.AsStringMap();
+        StringMap sm = flow.AsStringMap();
 
         Assert.That(sm.ToString(), Has.Exactly(9).EqualTo('a'));
     }

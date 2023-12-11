@@ -145,7 +145,7 @@ public class Flow : IDiagramComponent {
                     );
 
                     for (var i = 0; i < spaces.Length; i++) {
-                        var childOffset = this.RowAlignment switch {
+                        int childOffset = this.RowAlignment switch {
                             Alignment.LEFT => 0,
                             Alignment.CENTER => (rowSpans[rowIdx] - secondaryAxisSelector(row[i])) / 2,
                             Alignment.RIGHT => rowSpans[rowIdx] - secondaryAxisSelector(row[i]),
@@ -159,7 +159,7 @@ public class Flow : IDiagramComponent {
                 }
 
                 // We will never draw the last gap/space, so draw it here.
-                var finalOffset = this.RowAlignment switch {
+                int finalOffset = this.RowAlignment switch {
                     Alignment.LEFT => 0,
                     Alignment.CENTER => (rowSpans[rowIdx] - secondaryAxisSelector(row[^1])) / 2,
                     Alignment.RIGHT => rowSpans[rowIdx] - secondaryAxisSelector(row[^1]),
@@ -170,7 +170,7 @@ public class Flow : IDiagramComponent {
             }
             else {
                 foreach (StringMap child in row) {
-                    var childOffset = this.RowAlignment switch {
+                    int childOffset = this.RowAlignment switch {
                         Alignment.LEFT => 0,
                         Alignment.CENTER => (rowSpans[rowIdx] - secondaryAxisSelector(child)) / 2,
                         Alignment.RIGHT => rowSpans[rowIdx] - secondaryAxisSelector(child),

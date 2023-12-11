@@ -34,17 +34,17 @@ public class TreeTests {
             var availableNodes = 100;
             var maxNodes = 100;
 
-            var treeSf = 
+            StringMap treeSf =
                 this.generateRandomTree(
-                        rnd, 
+                        rnd,
                         ref availableNodes,
                         maxBranchingFactor: 3,
                         maxDepth: 4
-                )
-                .AsStringMap();
+                    )
+                    .AsStringMap();
 
-            var usedNodes = maxNodes - availableNodes;
-            
+            int usedNodes = maxNodes - availableNodes;
+
             Assert.That(treeSf.ToString(), Has.Exactly(usedNodes).EqualTo('a'));
         }
     }
@@ -57,7 +57,7 @@ public class TreeTests {
         int maxBranchingFactor = 3,
         int idx = 0
     ) {
-        var t = new Tree(new Text(Alignment.LEFT, $"a"))
+        var t = new Tree(new Text(Alignment.LEFT, "a"))
             { SiblingSpacing = 2, ParentSpacing = 1 };
         maxNodes -= 1;
 
