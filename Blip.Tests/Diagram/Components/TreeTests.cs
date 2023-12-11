@@ -26,13 +26,26 @@ public class TreeTests {
     };
 
     [Test]
-    public void Blah() {
+    public void FuzzTestTrees() {
+        var testCount = 10;
+
         var rnd = new Random();
-        for (var i = 0; i < 10; i++) {
-            Console.WriteLine("----TREE----");
-            var maxNodes = 10;
-            Console.WriteLine(this.generateRandomTree(rnd, ref maxNodes, maxBranchingFactor: 2, maxDepth: 3)
-                .AsStringMap());
+        for (var i = 0; i < testCount; i++) {
+            var availableNodes = 100;
+            var maxNodes = 100;
+
+            StringMap treeSf =
+                this.generateRandomTree(
+                        rnd,
+                        ref availableNodes,
+                        maxBranchingFactor: 3,
+                        maxDepth: 4
+                    )
+                    .AsStringMap();
+
+            int usedNodes = maxNodes - availableNodes;
+
+            Assert.That(treeSf.ToString(), Has.Exactly(usedNodes).EqualTo('a'));
         }
     }
 
@@ -44,7 +57,7 @@ public class TreeTests {
         int maxBranchingFactor = 3,
         int idx = 0
     ) {
-        var t = new Tree(new Text(Alignment.LEFT, $"Node ({depth - 1}, {idx})"))
+        var t = new Tree(new Text(Alignment.LEFT, "a"))
             { SiblingSpacing = 2, ParentSpacing = 1 };
         maxNodes -= 1;
 

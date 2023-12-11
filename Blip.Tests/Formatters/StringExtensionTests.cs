@@ -56,7 +56,7 @@ public class StringExtensionTests(string subStr) {
         string[] words = subStr.Split(" ");
         int totalWordLength = words
             .Select(w => w.Length)
-            .Aggregate(0, (tot, cur) => tot + cur);
+            .Sum();
 
         Assert.That(justified.ToCharArray(),
             Has.Exactly(len - totalWordLength).EqualTo(' '));
