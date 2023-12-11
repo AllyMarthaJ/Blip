@@ -164,7 +164,7 @@ public class FlowTests {
 
         var titleChildren = new List<IDiagramComponent>();
         Flow innerF = new()
-            { Children = titleChildren, RowAlignment = Alignment.CENTER, ChildGap = 10};
+            { Children = titleChildren, RowAlignment = Alignment.CENTER, ChildGap = 10 };
 
         Box b = new Box("Authored by: Ally Martha\n Date: 12/12/23", "Lorem Ipsum")
             { MessageAlignment = Alignment.LEFT };
@@ -174,7 +174,9 @@ public class FlowTests {
         Tree g = new Tree(
             new Text(Alignment.LEFT, "lorem"),
             new Tree(new Text(Alignment.LEFT, "ipsum"),
-                new Tree(new Text(Alignment.LEFT, "panda"),
+                new Tree(
+                    new Box("panda")
+                        { MessagePadding = new(), MaxWidth = 10, MaxHeight = 3, MessageAlignment = Alignment.CENTER },
                     new Tree(new Text(Alignment.LEFT, "black")),
                     new Tree(new Text(Alignment.LEFT, "white"))
                 ),
