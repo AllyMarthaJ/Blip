@@ -10,6 +10,9 @@ public class Flow : IDiagramComponent {
 
     public Alignment FlowAlignment { get; set; } = Alignment.LEFT;
 
+    // TODO. Cross-axis alignment hard.
+    public Alignment RowAlignment { get; set; } = Alignment.LEFT;
+
     public Direction FlowDirection { get; set; } = Direction.HORIZONTAL;
     public int MaxWidth { get; set; }
     public int MaxHeight { get; set; }
@@ -89,17 +92,16 @@ public class Flow : IDiagramComponent {
             // But if we limit the overflow, we should pick tbe number of rows
             // to fit. Goes without saying: this is lossy.
             for (var i = 0; i < childrenByRow.Count; i++) {
-                if (span + rowSizes[i] >= maxDefaultSecondaryAxis) {
+                if (span + rowSizes[i] > maxDefaultSecondaryAxis) {
                     // Can't fit this on the next row.
                     break;
                 }
 
                 rowsToFit++;
-                span += rowSizes[i];
-                if (i < childrenByRow.Count - 1) {
-                    span += this.RowGap;
-                }
+                span += rowSizes[i] + this.RowGap;
             }
+
+            span -= this.RowGap;
         }
 
         // Creating the StringMap along the primary axis (width/height)
@@ -108,8 +110,8 @@ public class Flow : IDiagramComponent {
         // We also guarantee span <= maxDefaultSecondaryAxis except for 0
         // maxDefaultSecondaryAxis.
         StringMap sm = this.FlowDirection switch {
-            Direction.HORIZONTAL => new StringMap(maxDefaultPrimaryAxis, span),
-            Direction.VERTICAL => new StringMap(span, maxDefaultPrimaryAxis),
+            Direction.HORIZONTAL => new StringMap(maxPrimaryAxis, span),
+            Direction.VERTICAL => new StringMap(span, maxPrimaryAxis),
             _ => throw new ArgumentOutOfRangeException()
         };
 
