@@ -156,4 +156,46 @@ public class FlowTests {
 
         Assert.That(sm.ToString(), Has.Exactly(9).EqualTo('a'));
     }
+
+    [Test]
+    public void BlahAgain() {
+        var children = new List<IDiagramComponent>();
+        Flow f = new() { FlowDirection = Direction.VERTICAL, RowAlignment = Alignment.CENTER, Children = children };
+
+        var titleChildren = new List<IDiagramComponent>();
+        Flow innerF = new()
+            { Children = titleChildren, RowAlignment = Alignment.CENTER, ChildGap = 10};
+
+        Box b = new Box("Authored by: Ally Martha\n Date: 12/12/23", "Lorem Ipsum")
+            { MessageAlignment = Alignment.LEFT };
+
+        titleChildren.Add(b);
+
+        Tree g = new Tree(
+            new Text(Alignment.LEFT, "lorem"),
+            new Tree(new Text(Alignment.LEFT, "ipsum"),
+                new Tree(new Text(Alignment.LEFT, "panda"),
+                    new Tree(new Text(Alignment.LEFT, "black")),
+                    new Tree(new Text(Alignment.LEFT, "white"))
+                ),
+                new Tree(new Text(Alignment.LEFT, "dog"),
+                    new Tree(new Text(Alignment.LEFT, "floof"))
+                )
+            ),
+            new Tree(new Text(Alignment.LEFT, "at")),
+            new Tree(new Text(Alignment.LEFT, "eros"))
+        );
+
+        titleChildren.Add(g);
+
+        children.Add(innerF);
+
+        Text t = new Text(Alignment.JUSTIFY,
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam nunc sapien, lacinia vitae hendrerit non, tincidunt sit amet nunc. Nunc laoreet mauris ac feugiat mattis. Quisque mattis dui vel sagittis semper. Morbi finibus hendrerit odio at elementum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Nunc hendrerit nulla id neque sollicitudin ultricies. Interdum et malesuada fames ac ante ipsum primis in faucibus. Donec varius cursus eleifend. Donec congue neque ut faucibus tristique. Donec quis tempus orci, et rhoncus mauris. Etiam sit amet viverra ipsum.\n\nProin cursus est sed arcu lacinia, eu pulvinar quam tempor. Ut sit amet accumsan diam. Ut ut lorem at elit rhoncus dapibus ac sit amet dui. Sed eget ex tincidunt, condimentum nisl quis, faucibus ipsum. Phasellus vehicula pharetra eleifend. Integer mauris sem, eleifend id turpis ac, efficitur aliquet purus. Maecenas facilisis consequat sapien, vitae euismod ligula consequat vitae. Praesent faucibus tempor vulputate. Integer at tortor sit amet risus luctus bibendum. Integer tristique bibendum diam, at bibendum nunc fringilla eget. Aliquam in purus a libero lobortis condimentum ac eget nisi. Maecenas sed luctus neque. Suspendisse laoreet augue quis finibus sagittis. Nunc convallis enim in gravida luctus. Fusce gravida a felis ut finibus. Proin maximus mattis lacus, et semper enim mattis vitae.\n\nSed et augue interdum, euismod lacus sit amet, tincidunt odio. Morbi interdum nibh nec metus venenatis dictum. Pellentesque at risus imperdiet, ornare ante in, dictum lacus. Integer purus diam, mattis non interdum et, malesuada et tellus. Suspendisse luctus consectetur erat at cursus. Praesent semper auctor mauris quis scelerisque. Etiam eget condimentum ex. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nullam lorem eros, commodo non laoreet nec, finibus porta mi. Phasellus eleifend eu nisl et mollis. Quisque ut vulputate ante. Quisque a libero eget sem dapibus ornare sed vel libero. Integer gravida, sem vitae euismod efficitur, enim nunc faucibus neque, vitae porta nisi tellus sit amet lorem. Pellentesque eu augue eget ex placerat tempor. ")
+            { MaxWidth = 100 };
+
+        children.Add(t);
+
+        Console.WriteLine(f.AsStringMap());
+    }
 }
