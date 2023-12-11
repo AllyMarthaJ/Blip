@@ -9,8 +9,6 @@ public class Flow : IDiagramComponent {
     public int RowGap { get; set; } = 1;
 
     public Alignment FlowAlignment { get; set; } = Alignment.LEFT;
-
-    // TODO. Cross-axis alignment hard.
     public Alignment RowAlignment { get; set; } = Alignment.LEFT;
 
     public Direction FlowDirection { get; set; } = Direction.HORIZONTAL;
@@ -70,9 +68,9 @@ public class Flow : IDiagramComponent {
                 .Max()
             : maxDefaultPrimaryAxis;
 
-        // A row's "size" is given by how much space it occupies on the 
+        // A row's "span" is given by how much space it occupies on the 
         // secondary axis. 
-        int[] rowSizes = childrenByRow
+        int[] rowSpans = childrenByRow
             .Select(row => secondaryAxisSelector(row.MaxBy(secondaryAxisSelector)))
             .ToArray();
 
@@ -86,19 +84,19 @@ public class Flow : IDiagramComponent {
         // can overflow as much as we need to.
         if (maxDefaultSecondaryAxis == 0) {
             rowsToFit = childrenByRow.Count;
-            span = rowSizes.Sum() + Math.Max(0, rowSizes.Length - 1) * this.RowGap;
+            span = rowSpans.Sum() + Math.Max(0, rowSpans.Length - 1) * this.RowGap;
         }
         else {
             // But if we limit the overflow, we should pick tbe number of rows
             // to fit. Goes without saying: this is lossy.
             for (var i = 0; i < childrenByRow.Count; i++) {
-                if (span + rowSizes[i] > maxDefaultSecondaryAxis) {
+                if (span + rowSpans[i] > maxDefaultSecondaryAxis) {
                     // Can't fit this on the next row.
                     break;
                 }
 
                 rowsToFit++;
-                span += rowSizes[i] + this.RowGap;
+                span += rowSpans[i] + this.RowGap;
             }
 
             span -= this.RowGap;
@@ -147,24 +145,45 @@ public class Flow : IDiagramComponent {
                     );
 
                     for (var i = 0; i < spaces.Length; i++) {
-                        this.drawFlowChild(sm, row[i], primaryOffset, secondaryOffset);
+                        var childOffset = this.RowAlignment switch {
+                            Alignment.LEFT => 0,
+                            Alignment.CENTER => (rowSpans[rowIdx] - secondaryAxisSelector(row[i])) / 2,
+                            Alignment.RIGHT => rowSpans[rowIdx] - secondaryAxisSelector(row[i]),
+                            // You can't "justify" align a single object (cross-axis)
+                            _ => throw new ArgumentOutOfRangeException()
+                        };
+                        this.drawFlowChild(sm, row[i], primaryOffset, secondaryOffset + childOffset);
 
                         primaryOffset += primaryAxisSelector(row[i]) + spaces[i];
                     }
                 }
 
                 // We will never draw the last gap/space, so draw it here.
-                this.drawFlowChild(sm, row[^1], primaryOffset, secondaryOffset);
+                var finalOffset = this.RowAlignment switch {
+                    Alignment.LEFT => 0,
+                    Alignment.CENTER => (rowSpans[rowIdx] - secondaryAxisSelector(row[^1])) / 2,
+                    Alignment.RIGHT => rowSpans[rowIdx] - secondaryAxisSelector(row[^1]),
+                    // You can't "justify" align a single object (cross-axis)
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+                this.drawFlowChild(sm, row[^1], primaryOffset, secondaryOffset + finalOffset);
             }
             else {
                 foreach (StringMap child in row) {
-                    this.drawFlowChild(sm, child, primaryOffset, secondaryOffset);
+                    var childOffset = this.RowAlignment switch {
+                        Alignment.LEFT => 0,
+                        Alignment.CENTER => (rowSpans[rowIdx] - secondaryAxisSelector(child)) / 2,
+                        Alignment.RIGHT => rowSpans[rowIdx] - secondaryAxisSelector(child),
+                        // You can't "justify" align a single object (cross-axis)
+                        _ => throw new ArgumentOutOfRangeException()
+                    };
+                    this.drawFlowChild(sm, child, primaryOffset, secondaryOffset + childOffset);
 
                     primaryOffset += primaryAxisSelector(child) + this.ChildGap;
                 }
             }
 
-            secondaryOffset += rowSizes[rowIdx] + this.RowGap;
+            secondaryOffset += rowSpans[rowIdx] + this.RowGap;
         }
 
         return sm;

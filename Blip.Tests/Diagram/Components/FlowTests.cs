@@ -129,7 +129,7 @@ public class FlowTests {
             pAxis--;
         }
     }
-    
+
     [Test]
     [TestCaseSource(nameof(InvariantTestsSource))]
     public void LimitedPrimaryAxisLimitedSecondaryAxisTruncates(Direction dir, Alignment flowAlignment) {
@@ -155,5 +155,23 @@ public class FlowTests {
         var sm = flow.AsStringMap();
 
         Assert.That(sm.ToString(), Has.Exactly(9).EqualTo('a'));
+    }
+
+    [Test]
+    public void Stuff() {
+        Raw r1 = new Raw(StringMap.FromLineDelimitedString("#####\n#####\n#####\n#####\n#####"));
+        Raw r2 = new Raw(StringMap.FromLineDelimitedString("###\n###\n###"));
+        Raw r3 = new Raw(StringMap.FromLineDelimitedString("#"));
+        Raw r4 = new Raw(StringMap.FromLineDelimitedString("###\n###\n###"));
+        Raw r5 = new Raw(StringMap.FromLineDelimitedString("##\n##"));
+        Raw r6 = new Raw(StringMap.FromLineDelimitedString("#"));
+
+
+        Flow f = new() {
+            Children = new[] { r1, r2, r3, r4, r5, r6 }, RowAlignment = Alignment.CENTER,
+            FlowAlignment = Alignment.JUSTIFY, MaxWidth = 11
+        };
+
+        Console.WriteLine(f.AsStringMap());
     }
 }
