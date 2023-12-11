@@ -18,33 +18,33 @@ public class Flow : IDiagramComponent {
 
     private List<List<StringMap>> splitByLine(
         StringMap[] childrenMaps,
-        int maxPrimaryAxis,
+        int primaryAxisMaxDefault,
         Func<StringMap, int> primaryAxisMeasurement
     ) {
         List<List<StringMap>> childrenByRow = new();
         List<StringMap> currentList = new();
 
-        var left = 0;
+        var offset = 0;
 
-        if (maxPrimaryAxis == 0) {
+        if (primaryAxisMaxDefault == 0) {
             currentList = childrenMaps.ToList();
         }
         else {
-            foreach (StringMap t in childrenMaps) {
-                var size = primaryAxisMeasurement(t);
+            foreach (StringMap child in childrenMaps) {
+                int size = primaryAxisMeasurement(child);
 
-                if (left + size >= maxPrimaryAxis) {
+                if (offset + size > primaryAxisMaxDefault) {
                     childrenByRow.Add(currentList);
                     currentList = new List<StringMap>();
-                    left = 0;
+                    offset = 0;
                 }
 
-                currentList.Add(t);
+                currentList.Add(child);
 
                 // Don't worry about excluding ChildGap off the end;
                 // we're not actually computing the real value, just need
                 // to ensure the right things get put on to the right rows.
-                left += size + this.ChildGap;
+                offset += size + this.ChildGap;
             }
         }
 
@@ -53,61 +53,134 @@ public class Flow : IDiagramComponent {
         return childrenByRow;
     }
 
+    private void drawFlowChild(StringMap sm, StringMap child, int primary, int secondary) {
+        switch (this.FlowDirection) {
+            case Direction.HORIZONTAL: {
+                sm.DrawStringMap(child, primary, secondary);
+                break;
+            }
+            case Direction.VERTICAL: {
+                sm.DrawStringMap(child, secondary, primary);
+                break;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
     public StringMap AsStringMap() {
-        var childrenMaps = this.Children
+        StringMap[] childrenMaps = this.Children
             .Select((child) => child.AsStringMap())
             .ToArray();
-        var childrenByRow =
-            this.splitByLine(childrenMaps, this.MaxWidth, (s) => s.Width);
 
-        // If MaxWidth given, we should use that.
-        var maxWidth = this.MaxWidth == 0
+        // The primary axis is the one which controls the flow of 
+        // children; the secondary axis provides an overflow buffer.
+        var maxDefaultPrimaryAxis =
+            this.FlowDirection switch {
+                Direction.HORIZONTAL => this.MaxWidth,
+                Direction.VERTICAL => this.MaxHeight,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+        var maxDefaultSecondaryAxis =
+            this.FlowDirection switch {
+                Direction.HORIZONTAL => this.MaxHeight,
+                Direction.VERTICAL => this.MaxWidth,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+        Func<StringMap?, int> primaryAxisSelector =
+            this.FlowDirection switch {
+                Direction.HORIZONTAL => (child) => child?.Width ?? 0,
+                Direction.VERTICAL => (child) => child?.Height ?? 0,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+        Func<StringMap?, int> secondaryAxisSelector =
+            this.FlowDirection switch {
+                Direction.HORIZONTAL => (child) => child?.Height ?? 0,
+                Direction.VERTICAL => (child) => child?.Width ?? 0,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+        // Rows flow *along* the primary axis. The number of rows
+        // is limited by the secondary axis maximum.
+        // Rows are stacked AGAINST the secondary axis, i.e. will 
+        // accumulate along it.
+        var childrenByRow =
+            this.splitByLine(childrenMaps, maxDefaultPrimaryAxis, primaryAxisSelector);
+
+        // If a maximum constraint is given for the primary axis,
+        // we should max use of it.
+        // This allows for strict tightening of the resultant StringMap.
+        var maxPrimaryAxis = maxDefaultPrimaryAxis == 0
             ? childrenByRow
                 .Select((row) =>
-                    row.Sum((child) => child.Width) +
+                    row.Sum(primaryAxisSelector) +
                     Math.Max(0, row.Count - 1) * this.ChildGap)
                 .Max()
-            : this.MaxWidth;
+            : maxDefaultPrimaryAxis;
 
-        var rowHeights = childrenByRow
-            .Select((row) => row.MaxBy((child) => child.Height)?.Height ?? 0)
+        // A row's "size" is given by how much space it occupies on the 
+        // secondary axis. 
+        var rowSizes = childrenByRow
+            .Select((row) => secondaryAxisSelector(row.MaxBy(secondaryAxisSelector)))
             .ToArray();
 
+        // The number of rows, again, is limited by secondary axis.
+        // The span describes the total space occupied by the rows along
+        // the secondary axis, including gaps.
         var rowsToFit = 0;
-        var height = 0;
+        var span = 0;
 
-        if (this.MaxHeight == 0) {
+        // No maximum size handed to the secondary axis means that we 
+        // can overflow as much as we need to.
+        if (maxDefaultSecondaryAxis == 0) {
             rowsToFit = childrenByRow.Count;
-            height = rowHeights.Sum() + Math.Max(0, rowHeights.Length - 1) * this.RowGap;
+            span = rowSizes.Sum() + Math.Max(0, rowSizes.Length - 1) * this.RowGap;
         }
         else {
+            // But if we limit the overflow, we should pick tbe number of rows
+            // to fit. Goes without saying: this is lossy.
             for (int i = 0; i < childrenByRow.Count; i++) {
-                if (height + rowHeights[i] >= this.MaxHeight) {
+                if (span + rowSizes[i] >= maxDefaultSecondaryAxis) {
                     // Can't fit this on the next row.
                     break;
                 }
 
                 rowsToFit++;
-                height += rowHeights[i];
+                span += rowSizes[i];
                 if (i < childrenByRow.Count - 1) {
-                    height += this.RowGap;
+                    span += this.RowGap;
                 }
             }
         }
 
-        StringMap sm = new(maxWidth, height);
+        // Creating the StringMap along the primary axis (width/height)
+        // with the span as the secondary value allows us to fit exactly
+        // the content size we need. 
+        // We also guarantee span <= maxDefaultSecondaryAxis except for 0
+        // maxDefaultSecondaryAxis.
+        StringMap sm = this.FlowDirection switch {
+            Direction.HORIZONTAL => new StringMap(maxDefaultPrimaryAxis, span),
+            Direction.VERTICAL => new StringMap(span, maxDefaultPrimaryAxis),
+            _ => throw new ArgumentOutOfRangeException()
+        };
 
-        var top = 0;
+        // Track how far through the rows we are.
+        var secondaryOffset = 0;
+        
         for (int rowIdx = 0; rowIdx < rowsToFit; rowIdx++) {
             var row = childrenByRow[rowIdx];
-            var rowWidth =
-                row.Sum((child) => child.Width) +
+            
+            // How much space we occupy along the main axis.
+            var rowSize =
+                row.Sum(primaryAxisSelector) +
                 Math.Max(0, row.Count - 1) * this.ChildGap;
 
-            var left = this.FlowAlignment switch {
+            var primaryOffset = this.FlowAlignment switch {
                 Alignment.LEFT => 0,
-                Alignment.RIGHT => maxWidth - rowWidth,
-                Alignment.CENTER => (maxWidth - rowWidth - 1) / 2,
+                Alignment.RIGHT => maxPrimaryAxis - rowSize,
+                Alignment.CENTER => (maxPrimaryAxis - rowSize - 1) / 2,
                 Alignment.JUSTIFY => 0,
                 _ => throw new ArgumentOutOfRangeException()
             };
@@ -115,29 +188,34 @@ public class Flow : IDiagramComponent {
             if (this.FlowAlignment == Alignment.JUSTIFY) {
                 if (row.Count > 1) {
                     int[] spaces = SharedHelpers.GetJustifySpaces(
-                        maxWidth,
-                        row.Sum(child => child.Width),
+                        maxPrimaryAxis,
+                        // Ignore gaps: we make our own gaps for justify alignment.
+                        // We use gaps to precalculate the number of items on the row,
+                        // because justify alignment can't shrink; that is to say that
+                        // the gap above is, by definition, the minimum gap between each item.
+                        row.Sum(primaryAxisSelector),
                         row.Count
                     );
 
-                    for (int i = 0; i < spaces.Length; i++) {
-                        sm.DrawStringMap(row[i], left, top);
+                    for (var i = 0; i < spaces.Length; i++) {
+                        this.drawFlowChild(sm, row[i], primaryOffset, secondaryOffset);
 
-                        left += row[i].Width + spaces[i];
+                        primaryOffset += primaryAxisSelector(row[i]) + spaces[i];
                     }
                 }
 
-                sm.DrawStringMap(row[^1], left, top);
+                // We will never draw the last gap/space, so draw it here.
+                this.drawFlowChild(sm, row[^1], primaryOffset, secondaryOffset);
             }
             else {
-                foreach (StringMap t in row) {
-                    sm.DrawStringMap(t, left, top);
+                foreach (StringMap child in row) {
+                    this.drawFlowChild(sm, child, primaryOffset, secondaryOffset);
 
-                    left += t.Width + this.ChildGap;
+                    primaryOffset += primaryAxisSelector(child) + this.ChildGap;
                 }
             }
 
-            top += rowHeights[rowIdx] + this.RowGap;
+            secondaryOffset += rowSizes[rowIdx] + this.RowGap;
         }
 
         return sm;
