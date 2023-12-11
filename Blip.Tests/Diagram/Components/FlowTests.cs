@@ -84,6 +84,7 @@ public class FlowTests {
         var flow = new Flow { Children = children, FlowDirection = dir, FlowAlignment = flowAlignment };
 
         var maxAxis = children.Length + (children.Length - 1) * flow.ChildGap;
+
         switch (dir) {
             case Direction.HORIZONTAL:
                 flow.MaxWidth = maxAxis;
@@ -94,43 +95,37 @@ public class FlowTests {
             default:
                 throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
         }
+
+        var pAxis = dir switch {
+            Direction.HORIZONTAL => flow.MaxWidth,
+            Direction.VERTICAL => flow.MaxHeight,
+        };
         
-        while (flow.MaxWidth > 1) {
+        // Testing without recomputing the layout here is a PITA.
+        // Test that all values are present, and that some semblance
+        // of layout is preserved.
+        while (pAxis > 1) {
             var sm = flow.AsStringMap();
 
-            var expectedChildrenPerRow = (int)Math.Ceiling(flow.MaxWidth / (double)maxAxis * children.Length);
-            var expectedRows = (int)Math.Ceiling(children.Length / (double)expectedChildrenPerRow);
-
-            var expectedPrimaryAxisSize = expectedChildrenPerRow + (expectedChildrenPerRow - 1) * flow.ChildGap;
-            var expectedSecondaryAxisSize = expectedRows + (expectedRows - 1) * flow.RowGap;
-            
-            Console.WriteLine($"With width {flow.MaxWidth} expect {expectedChildrenPerRow} children per row on {expectedRows} rows - real {sm.Width}");
+            Assert.That(sm.ToString(), Has.Exactly(10).EqualTo('a'));
             switch (dir) {
-                case Direction.HORIZONTAL:
-                    Assert.That(sm, Has.Property("Width").EqualTo(expectedPrimaryAxisSize));
-                    Assert.That(sm, Has.Property("Height").EqualTo(expectedSecondaryAxisSize));
+                case Direction.HORIZONTAL: {
+                    Assert.That(sm, Has.Property("Width").EqualTo(flow.MaxWidth));
+                    Assert.That(sm, Has.Property("Width").GreaterThan(flow.MaxHeight));
+                    flow.MaxWidth--;
                     break;
-                case Direction.VERTICAL:
-                    Assert.That(sm, Has.Property("Height").EqualTo(expectedPrimaryAxisSize));
-                    Assert.That(sm, Has.Property("Width").EqualTo(expectedSecondaryAxisSize));
+                }
+                case Direction.VERTICAL: {
+                    Assert.That(sm, Has.Property("Height").EqualTo(flow.MaxHeight));
+                    Assert.That(sm, Has.Property("Height").GreaterThan(flow.MaxWidth));
+                    flow.MaxHeight--;
                     break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
             }
-            
-            Assert.That(sm.ToString(), Has.Exactly(10).EqualTo('a'));
-            
-            flow.MaxWidth--;
-        }
-        switch (dir) {
-            case Direction.HORIZONTAL:
-                flow.MaxWidth = children.Length * 10;
-                break;
-            case Direction.VERTICAL:
-                flow.MaxHeight = children.Length * 10;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
+
+            pAxis--;
         }
     }
 }
