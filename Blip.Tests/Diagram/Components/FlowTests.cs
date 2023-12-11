@@ -13,7 +13,7 @@ public class FlowTests {
         new object[] { Direction.VERTICAL, Alignment.LEFT },
         new object[] { Direction.VERTICAL, Alignment.CENTER },
         new object[] { Direction.VERTICAL, Alignment.RIGHT },
-        new object[] { Direction.VERTICAL, Alignment.JUSTIFY },
+        new object[] { Direction.VERTICAL, Alignment.JUSTIFY }
     };
 
     [Test]
@@ -83,7 +83,7 @@ public class FlowTests {
 
         var flow = new Flow { Children = children, FlowDirection = dir, FlowAlignment = flowAlignment };
 
-        var maxAxis = children.Length + (children.Length - 1) * flow.ChildGap;
+        int maxAxis = children.Length + (children.Length - 1) * flow.ChildGap;
 
         switch (dir) {
             case Direction.HORIZONTAL:
@@ -96,16 +96,17 @@ public class FlowTests {
                 throw new ArgumentOutOfRangeException(nameof(dir), dir, null);
         }
 
-        var pAxis = dir switch {
+        int pAxis = dir switch {
             Direction.HORIZONTAL => flow.MaxWidth,
             Direction.VERTICAL => flow.MaxHeight,
+            _ => throw new ArgumentOutOfRangeException(nameof(dir), dir, null)
         };
-        
+
         // Testing without recomputing the layout here is a PITA.
         // Test that all values are present, and that some semblance
         // of layout is preserved.
         while (pAxis > 1) {
-            var sm = flow.AsStringMap();
+            StringMap sm = flow.AsStringMap();
 
             Assert.That(sm.ToString(), Has.Exactly(10).EqualTo('a'));
             switch (dir) {
