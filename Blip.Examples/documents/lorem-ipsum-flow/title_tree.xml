@@ -1,0 +1,45 @@
+<Tree xmlns:exs="https://extendedxmlserializer.github.io/v2" xmlns:sys="https://extendedxmlserializer.github.io/system"
+      SiblingSpacing="3" ParentSpacing="3">
+    <Node exs:type="Text" Content="lorem" Alignment="LEFT"/>
+    <Children exs:type="IDiagramComponent^1">
+        <Tree SiblingSpacing="3" ParentSpacing="3">
+            <Node exs:type="Text" Content="ipsum" Alignment="LEFT"/>
+            <Children exs:type="IDiagramComponent^1">
+                <Tree SiblingSpacing="3" ParentSpacing="3">
+                    <Node exs:type="Box" Message="panda" TitleAlignment="CENTER" MessageAlignment="CENTER"
+                          BorderWidth="1" BorderHeight="1" MaxWidth="10" MaxHeight="3">
+                        <TitlePadding Left="1" Top="0" Right="1" Bottom="0"/>
+                        <MessagePadding Left="0" Top="0" Right="0" Bottom="0"/>
+                    </Node>
+                    <Children exs:type="IDiagramComponent^1">
+                        <Tree SiblingSpacing="3" ParentSpacing="3">
+                            <Node exs:type="Text" Content="black" Alignment="LEFT"/>
+                            <Children exs:type="IDiagramComponent^1" exs:identity="1"/>
+                        </Tree>
+                        <Tree SiblingSpacing="3" ParentSpacing="3">
+                            <Node exs:type="Text" Content="white" Alignment="LEFT"/>
+                            <Children exs:type="IDiagramComponent^1" exs:reference="1"/>
+                        </Tree>
+                    </Children>
+                </Tree>
+                <Tree SiblingSpacing="3" ParentSpacing="3">
+                    <Node exs:type="Text" Content="dog" Alignment="LEFT"/>
+                    <Children exs:type="IDiagramComponent^1">
+                        <Tree SiblingSpacing="3" ParentSpacing="3">
+                            <Node exs:type="Text" Content="floof" Alignment="LEFT"/>
+                            <Children exs:type="IDiagramComponent^1" exs:reference="1"/>
+                        </Tree>
+                    </Children>
+                </Tree>
+            </Children>
+        </Tree>
+        <Tree SiblingSpacing="3" ParentSpacing="3">
+            <Node exs:type="Text" Content="at" Alignment="LEFT"/>
+            <Children exs:type="IDiagramComponent^1" exs:reference="1"/>
+        </Tree>
+        <Tree SiblingSpacing="3" ParentSpacing="3">
+            <Node exs:type="Text" Content="eros" Alignment="LEFT"/>
+            <Children exs:type="IDiagramComponent^1" exs:reference="1"/>
+        </Tree>
+    </Children>
+</Tree>

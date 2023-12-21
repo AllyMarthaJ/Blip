@@ -1,4 +1,7 @@
 using System.Text.RegularExpressions;
+using Blip.Diagram.Components;
+using ExtendedXmlSerializer;
+using ExtendedXmlSerializer.Configuration;
 
 namespace Blip;
 
@@ -28,4 +31,18 @@ public static partial class SharedHelpers {
 
         return spaces;
     }
+
+    internal static IExtendedXmlSerializer DocumentSerializer = new
+            ConfigurationContainer()
+        .UseAutoFormatting()
+        .UseOptimizedNamespaces()
+        .EnableReferences()
+        .EnableImplicitTyping(
+            typeof(IDiagramComponent), 
+            typeof(Box), typeof(Flow), 
+            typeof(Frame),
+            typeof(Text),
+            typeof(Tree), 
+            typeof(IOComponent))
+        .Create();
 }

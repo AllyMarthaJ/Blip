@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Flow xmlns:exs="https://extendedxmlserializer.github.io/v2" xmlns:sys="https://extendedxmlserializer.github.io/system"
+      FlowDirection="VERTICAL" RowAlignment="CENTER">
+    <Children exs:type="IDiagramComponent^1">
+        <IOComponent Path="title_tree.xml">
+            <Children exs:type="IDiagramComponent^1" />
+        </IOComponent>
+    </Children>
+</Flow>

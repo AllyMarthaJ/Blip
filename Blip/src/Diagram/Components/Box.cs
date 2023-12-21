@@ -1,9 +1,17 @@
 using Blip.Diagram.Styles;
 using Blip.Format;
+using ExtendedXmlSerializer.ContentModel.Content;
 
 namespace Blip.Diagram.Components;
 
-public class Box(string message, string? title = null) : IDiagramComponent {
+public class Box : IDiagramComponent {
+    public Box() { }
+
+    public Box(string message, string? title = null) {
+        this.Message = message;
+        this.Title = title;
+    }
+
     public Box(string title, string message, Alignment titleAlign, Alignment messageAlign) : this(title, message) {
         this.TitleAlignment = titleAlign;
         this.MessageAlignment = messageAlign;
@@ -12,8 +20,10 @@ public class Box(string message, string? title = null) : IDiagramComponent {
     public Padding TitlePadding { get; set; } = new() { Left = 1, Right = 1 };
     public Padding MessagePadding { get; set; } = new() { Top = 1, Bottom = 1, Left = 3, Right = 3 };
 
-    public string? Title { get; set; } = title;
-    public string Message { get; set; } = message;
+    [Verbatim]
+    public string? Title { get; set; }
+    [Verbatim]
+    public string Message { get; set; }
 
     public Alignment TitleAlignment { get; set; } = Alignment.CENTER;
     public Alignment MessageAlignment { get; set; } = Alignment.JUSTIFY;
@@ -56,7 +66,7 @@ public class Box(string message, string? title = null) : IDiagramComponent {
             this.MessagePadding.Top + (hasTitle ? separatorTop + 1 : this.BorderHeight);
         int messageWidth = width - messageLeft - this.MessagePadding.Right - borderWidth;
 
-        int actualMessageHeight = messageFmt.MeasureHeight(message, messageWidth);
+        int actualMessageHeight = messageFmt.MeasureHeight(this.Message, messageWidth);
         int maxMessageHeight = height - messageTop - this.MessagePadding.Bottom - borderHeight;
 
         int clampMessageHeight = Math.Min(maxMessageHeight, actualMessageHeight);

@@ -1,13 +1,25 @@
 namespace Blip.Diagram.Components;
 
-public class Tree(IDiagramComponent node, params IDiagramComponent[] children) : IDiagramComponent {
+public class Tree : IDiagramComponent {
+    public Tree() {
+        // This will nuke everything when AsStringMap is invoked.
+        this.Node = this;
+
+        this.Children = Array.Empty<IDiagramComponent>();
+    }
+
+    public Tree(IDiagramComponent node, params IDiagramComponent[] children) {
+        this.Node = node;
+        this.Children = children;
+    }
+
     public int SiblingSpacing { get; set; } = 3;
     public int ParentSpacing { get; set; } = 3;
 
-    public IDiagramComponent Node { get; set; } = node;
+    public IDiagramComponent Node { get; set; }
     public int MaxWidth { get; set; }
     public int MaxHeight { get; set; }
-    public IEnumerable<IDiagramComponent> Children { get; set; } = children;
+    public IEnumerable<IDiagramComponent> Children { get; set; }
 
     public StringMap AsStringMap() {
         // Base case: This is a leaf node.
